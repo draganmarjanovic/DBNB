@@ -15,7 +15,7 @@ export class Page extends React.Component {
                     { this.props.children }
                 </div>
                 <div className="home-footer">
-                    Some Footer
+                    <Footer />
                 </div>
             </div>
         )
@@ -43,6 +43,22 @@ export function NavBar (props) {
                 <Link to="DBNB/Link2">Link2</Link>
                 <Link to="DBNB/Link3">Link3</Link>
                 <Link to="DBNB/Link4">Link4</Link>
+            </div>
+        </div>
+    );
+}
+
+export function Footer (props) {
+    return (
+        <div className="footer-outer">
+            <div className="footer-upper">
+                Some upper content
+            </div>
+            <div className="footer-lower">
+                <div>
+                    <div>Left</div>
+                    <div>Right</div>
+                </div>
             </div>
         </div>
     );

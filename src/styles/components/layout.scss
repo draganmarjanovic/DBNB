@@ -15,7 +15,7 @@
     @extend .container;
 }
 
-.header-outer > div, .navbar-row > div {
+.header-outer > div, .navbar-row > div, .footer-lower > div {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -32,7 +32,7 @@
     font-size: 2rem;
 }
 
-.header-outer, .navbar-row {
+.header-outer, .navbar-row, .footer-upper {
     background-color: $primary;
     padding: 1rem;
     color: white;
@@ -45,4 +45,10 @@
     a:hover {
         border-bottom-color: white;
     }
+}
+
+.footer-lower {
+    color: white;
+    background-color: darken($primary, 20%);
+    padding: 0.4rem;
 }
