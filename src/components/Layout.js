@@ -8,7 +8,7 @@ export class Page extends React.Component {
         return (
             <div className="home-root">
                 <div className="home-header">
-                    <Header>Content</Header>
+                    <Header>{ this.props.title }</Header>
                     <NavBar />
                 </div>
                 <div className="home-content">
@@ -52,12 +52,29 @@ export function Footer (props) {
     return (
         <div className="footer-outer">
             <div className="footer-upper">
-                Some upper content
+                <div>
+                    Some upper content
+                </div>
             </div>
             <div className="footer-lower">
                 <div>
                     <div>Left</div>
                     <div>Right</div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export function Panel (props) {
+    return (
+        <div className="panel-outer">
+            <div className="panel">
+                <div className="panel-title">
+                    { props.title }
+                </div>
+                <div className="panel-content">
+                    { props.children }
                 </div>
             </div>
         </div>

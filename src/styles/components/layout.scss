@@ -12,6 +12,7 @@
 .home-content {
     flex-grow: 1;
     padding: 2rem;
+    width: 100%;
     @extend .container;
 }
 
@@ -47,8 +48,36 @@
     }
 }
 
+.footer-upper > div {
+    @extend .container;
+    @extend .row;
+}
+
 .footer-lower {
     color: white;
     background-color: darken($primary, 20%);
     padding: 0.4rem;
+}
+
+.panel-outer {
+    padding: 0.5rem;
+
+    .panel {
+        background-color: $bg-color;
+        box-shadow: 0rem 0rem 0.2rem 0.1rem darken($bg-color, 40%);
+        border-radius: 1.5rem;
+    
+        .panel-title {
+            padding: 0.4rem 1rem;
+            background-color: lighten($primary, 15%);
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .panel-content {
+            padding: 0.4rem 1rem;
+        }
+    }
 }
