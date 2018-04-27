@@ -9,7 +9,7 @@ class App extends React.Component {
             <Router>
                 <div>
                     <Switch>
-                        <Route exact path="/" component={Home} />
+                        <Route exact path="/DBNB" component={Home} />
                     </Switch>
                 </div>
             </Router>

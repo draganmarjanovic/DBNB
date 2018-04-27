@@ -1,0 +1,48 @@
+@import "../variables";
+@import "../grid";
+
+.home-root {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.home-content {
+    flex-grow: 1;
+    padding: 2rem;
+    @extend .container;
+}
+
+.header-outer > div, .navbar-row > div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    @extend .container;
+}
+
+.navbar-row > div {
+    justify-content: flex-end;
+}
+
+.header-outer {
+    font-size: 2rem;
+}
+
+.header-outer, .navbar-row {
+    background-color: $primary;
+    padding: 1rem;
+    color: white;
+
+    a {
+        padding: 0 0.3rem;
+        color: white;
+    }
+
+    a:hover {
+        border-bottom-color: white;
+    }
+}

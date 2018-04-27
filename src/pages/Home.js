@@ -1,9 +1,12 @@
 import React from "react";
+import { Page } from "../components/Layout";
 
 class Home extends React.Component {
     render() {
         return (
-            <h1>Home</h1>
+            <Page>
+                <h1>Home</h1>
+            </Page>
         );
     }
 }
