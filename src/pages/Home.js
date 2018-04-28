@@ -1,5 +1,6 @@
 import React from "react";
 import { Page, Panel } from "../components/Layout";
+import { Button } from "../components/Input";
 
 import "../styles/grid.scss";
 
@@ -15,7 +16,10 @@ class Home extends React.Component {
                     </div>
                     <div className="col-sm-6">
                         <Panel title="Smaller">
-                            A smaller Panel but still pretty big
+                            A smaller Panel but still pretty big<br />
+                            <Button onclick={() => {
+                                console.log("Click");
+                            }}>Some Button</Button>
                         </Panel>
                     </div>
                 </div>
