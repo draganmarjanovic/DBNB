@@ -12,7 +12,9 @@ export class Page extends React.Component {
                     <NavBar />
                 </div>
                 <div className="home-content">
-                    { this.props.children }
+                    <div>
+                        { this.props.children }
+                    </div>
                 </div>
                 <div className="home-footer">
                     <Footer />
