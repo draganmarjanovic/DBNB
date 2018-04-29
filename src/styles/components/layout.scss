@@ -11,9 +11,12 @@
 
 .home-content {
     flex-grow: 1;
-    padding: 2rem;
-    // width: 100%;
+    width: 100%;
     @extend .container;
+
+    > div {
+        padding: 2rem;
+    }
 }
 
 .header-outer > div, .navbar-row > div, .footer-lower > div {

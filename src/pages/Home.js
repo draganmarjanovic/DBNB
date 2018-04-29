@@ -24,16 +24,19 @@ class Home extends React.Component {
 
             let houseListings = [];
 
-            HouseManager.methods.getAllHouses().call({ from: "0x5d372cfA9Beee5Beb31d683b219Df2d7C863ABd8" }).then((result) => {
+            HouseManager.methods.getAllHouses().call().then((result) => {
                 result.forEach((blockID) => {
                     let house = new this.state.web3.eth.Contract(HouseABI.abi, blockID);
                     let houseList = {
                         id: blockID
                     };
-                    house.methods.getTitle().call({ from: "0x5d372cfA9Beee5Beb31d683b219Df2d7C863ABd8" }).then((title) => {
-                        houseList.title = title;
-                        houseListings.push(houseList);
-                        this.setState({ listings: houseListings });
+                    house.methods.getTitle().call().then((title) => {
+                        house.methods.getDescription().call().then((desc) => {
+                            houseList.title = title;
+                            houseList.desc = desc;
+                            houseListings.push(houseList);
+                            this.setState({ listings: houseListings });
+                        });
                     });
                 });
             });
@@ -41,7 +44,7 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        let web3 = new Web3("http://localhost:7545");
+        let web3 = new Web3(config.addr);
         this.setState({ web3 });
         web3.eth.defaultAccount = web3.eth.accounts[0];
         setTimeout(this.fetchHouses.bind(this), 0);
@@ -56,7 +59,7 @@ class Home extends React.Component {
                 listingResult.push((
                     <div className="col-md-6 col-sm-12" key={ listing.id }>
                         <Panel title={ listing.title }>
-                            Some House listing is meant to be here
+                            { listing.desc }
                         </Panel>
                     </div>
                 ))

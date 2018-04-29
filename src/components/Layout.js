@@ -29,7 +29,7 @@ export function Header (props) {
         <div className="header-outer">
             <div>
                 <div className="header-left">
-                    <Link to="DBNB">DBNB</Link>
+                    <Link to="/DBNB">DBNB</Link>
                 </div>
                 <div className="header-right">{ props.children }</div>
             </div>
@@ -41,10 +41,10 @@ export function NavBar (props) {
     return (
         <div className="navbar-row">
             <div>
-                <Link to="DBNB/Profile">Profile</Link>
-                <Link to="DBNB/Link2">Link2</Link>
-                <Link to="DBNB/Link3">Link3</Link>
-                <Link to="DBNB/Link4">Link4</Link>
+                <Link to="/DBNB/Profile">Profile</Link>
+                <Link to="/DBNB/Link2">Link2</Link>
+                <Link to="/DBNB/Link3">Link3</Link>
+                <Link to="/DBNB/Link4">Link4</Link>
             </div>
         </div>
     );

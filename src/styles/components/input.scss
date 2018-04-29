@@ -1,5 +1,44 @@
+@import "../variables";
+
 .button {
     > div {
         user-select: none;
+        text-align: center;
+        cursor: pointer;
     }
+
+    padding: 0.4rem;
+    border: 0.2rem solid $primary;
+    color: $primary;
+    border-radius: 1.5rem;
+    transition: all 0.5s;
+}
+
+.button:hover {
+    color: white;
+    background-color: $primary;
+}
+
+.text {
+    > div {
+        > label {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+    
+        > input {
+            display: block;
+            box-sizing: content-box;
+            padding: 0rem;
+            -webkit-appearance: none;
+            border: none;
+            font-size: 1rem;
+            width: 100%;
+        }
+    
+        border-bottom: 0.2rem solid $primary;
+    }
+
+    padding: 0.4rem;
 }
