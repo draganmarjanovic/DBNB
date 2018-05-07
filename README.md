@@ -1,10 +1,9 @@
 # DBNB
-A DApp.
-
-Hi
+Decentralized AirBNB
 
 ## Install
-Before running any commands, run `npm install` to download and install the required libraries
+Before running any commands, run `npm install` to download and install the required libraries.
+Symlink src/contracts to build/contracts by running `npm run linkContracts`
 
 ## Usage
 There are two main commands for running the website, `truffle compile` will compile all the solidity file and place them in the build directory. And `npm start` will allow you to edit and view the website live on your local machine at `localhost:3000/DBNB`.

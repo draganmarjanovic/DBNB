@@ -1,5 +1,5 @@
 {
-  "name": "DBNB",
+  "name": "decentralized-airbnb",
   "version": "1.0.0",
   "private": true,
   "homepage": "http://draganmarjanovic.github.io/DBNB",
@@ -26,12 +26,17 @@
     "zeppelin-solidity": "^1.9.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm run truffle && react-scripts start",
+    "build": "npm run truffle && npm run linkContracts && react-scripts build",
+    "linkContracts": "ln -s build/contracts/ src/contracts",
     "postbuild": "mv build docs",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "truffle": "npx truffle compile"
+  },
+  "devDependencies": {
+    "truffle": "^4.1.8"
   }
 }
