@@ -1,7 +1,7 @@
 import React from "react";
 import Web3 from "web3";
 import { Page, Panel } from "../components/Layout";
-import { Button, Text } from "../components/Input";
+import { Button, InputGroup, Label, Card, Elevation } from "@blueprintjs/core";
 
 import "../styles/grid.scss";
 
@@ -53,32 +53,37 @@ class Profile extends React.Component {
             <Page title="Profile">
                 <div className="row">
                     <div className="col-sm-12 col-md-6">
-                        <Panel title="Add Listing">
-                            <Text
-                                label="Account Address"
-                                onChange={(val) => {
-                                    this.state.addListing.addr = val;
-                                    this.setState({ addListing: this.state.addListing });
-                                }}
-                                />
-                            <Text 
-                                label="Listing Title"
-                                onChange={(val) => {
-                                    this.state.addListing.title = val;
-                                    this.setState({ addListing: this.state.addListing });
-                                }}
-                                />
-                            <Text
-                                label="Description"
-                                onChange={(val) => {
-                                    this.state.addListing.desc = val;
-                                    this.setState({ addListing: this.state.addListing });
-                                }}
-                                />
+                        <Card elevation={ Elevation.THREE }>
+                            <h4>Add Listing</h4>
+                            <Label text="Account Address">
+                                <InputGroup
+                                    onChange={(event) => {
+                                        this.state.addListing.addr = event.target.value;
+                                        this.setState({ addListing: this.state.addListing });
+                                    }}
+                                    intent="primary"/>
+                            </Label>
+                            <Label text="Listing Title">
+                                <InputGroup
+                                    onChange={(event) => {
+                                        this.state.addListing.title = event.target.value;
+                                        this.setState({ addListing: this.state.addListing });
+                                    }}
+                                    intent="primary"/>
+                            </Label>
+                            <Label text="Description">
+                                <InputGroup
+                                    onChange={(event) => {
+                                        this.state.addListing.desc = event.target.value;
+                                        this.setState({ addListing: this.state.addListing });
+                                    }}
+                                    intent="primary"/>
+                            </Label>
                             <Button
                                 onClick={ this.handleAddListing.bind(this) }
+                                intent="primary"
                             >Add Listing</Button>
-                        </Panel>
+                        </Card>
                     </div>
                 </div>
             </Page>

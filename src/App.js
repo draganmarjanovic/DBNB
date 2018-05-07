@@ -6,6 +6,10 @@ import Test from "./pages/Test";
 import Profile from "./pages/Profile";
 import Deploy from "./pages/Deploy";
 
+import "normalize.css/normalize.css";
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+
 class App extends React.Component {
     render() {
         return (
