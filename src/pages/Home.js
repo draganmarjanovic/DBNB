@@ -1,7 +1,7 @@
 import React from "react";
 import Web3 from "web3";
-import { Page, Panel } from "../components/Layout";
-import { Button } from "../components/Input";
+import { Page } from "../components/Layout";
+import { Card, Elevation } from "@blueprintjs/core";
 
 import "../styles/grid.scss";
 
@@ -58,9 +58,10 @@ class Home extends React.Component {
                 console.log(listing);
                 listingResult.push((
                     <div className="col-md-6 col-sm-12" key={ listing.id }>
-                        <Panel title={ listing.title }>
+                        <Card>
+                            <h4>{ listing.title }</h4>
                             { listing.desc }
-                        </Panel>
+                        </Card>
                     </div>
                 ))
             })
@@ -70,9 +71,10 @@ class Home extends React.Component {
             <Page title="Home">
                 <div className="row">
                     <div className="col-sm-12">
-                        <Panel title="Huge">
+                        <Card elevation={ Elevation.THREE }>
+                            <h4>Huge</h4>
                             This is a masshive panel
-                        </Panel>
+                        </Card>
                     </div>
                     
                     { listingResult }
