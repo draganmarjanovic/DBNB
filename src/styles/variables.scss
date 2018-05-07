@@ -41,17 +41,3 @@ html, body {
 html, body, #root, #root > div, .home-root {
     min-height: 100vh;
 }
-
-a {
-    color: $primary;
-    text-decoration: none;
-    font-weight: bolder;
-    transition: border-color 0.4s;
-    border-bottom-color: transparent;
-    border-bottom-style: solid;
-    border-bottom-width: 0.2rem;
-}
-
-a:hover {
-    border-bottom-color: $primary;
-}

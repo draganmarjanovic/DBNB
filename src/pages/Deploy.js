@@ -45,16 +45,14 @@ class Deploy extends React.Component {
 
     render() {
         return (
-            <Page title="Deploying">
-                <div className="row">
-                    <div className="col-sm-12">
-                        <Card elevation={ Elevation.THREE }>
-                            <h4>Deployed</h4>
-                            <p>House Manager: { this.state.houseManagerAddr }</p>
-                        </Card>
-                    </div>
+            <div className="row">
+                <div className="col-sm-12">
+                    <Card elevation={ Elevation.THREE }>
+                        <h4>Deployed</h4>
+                        <p>House Manager: { this.state.houseManagerAddr }</p>
+                    </Card>
                 </div>
-            </Page>
+            </div>
         )
     }
 }

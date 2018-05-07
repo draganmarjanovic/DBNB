@@ -68,19 +68,17 @@ class Home extends React.Component {
         }
 
         return (
-            <Page title="Home">
-                <div className="row">
-                    <div className="col-sm-12">
-                        <Card elevation={ Elevation.THREE }>
-                            <h4>Huge</h4>
-                            This is a masshive panel
-                        </Card>
-                    </div>
-                    
-                    { listingResult }
-
+            <div className="row">
+                <div className="col-sm-12">
+                    <Card elevation={ Elevation.THREE }>
+                        <h4>Huge</h4>
+                        This is a masshive panel
+                    </Card>
                 </div>
-            </Page>
+                
+                { listingResult }
+
+            </div>
         );
     }
 }

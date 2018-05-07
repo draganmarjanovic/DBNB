@@ -1,5 +1,11 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
+import { Navbar, NavbarGroup, NavbarHeading, NavbarDivider, Alignment, Icon, Tabs, Tab } from "@blueprintjs/core";
+
+import Home from "../pages/Home";
+import Profile from "../pages/Profile";
+import Deploy from "../pages/Deploy";
+
 import "../styles/grid.scss";
 import "../styles/components/layout.scss";
 
@@ -7,13 +13,15 @@ export class Page extends React.Component {
     render() {
         return (
             <div className="home-root">
-                <div className="home-header">
-                    <Header>{ this.props.title }</Header>
-                    <NavBar />
-                </div>
                 <div className="home-content">
                     <div>
-                        { this.props.children }
+                        <Tabs id="navbar" large={ true } renderActiveTabPanelOnly={ true }>
+                            <h3>DBNB</h3>
+                            <Tabs.Expander />
+                            <Tab id="home" title="Home" panel={<Home />} />
+                            <Tab id="profile" title="Profile" panel={<Profile />} />
+                            <Tab id="deploy" title="Deploy" panel={<Deploy />} />
+                        </Tabs>
                     </div>
                 </div>
                 <div className="home-footer">

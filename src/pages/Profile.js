@@ -50,43 +50,41 @@ class Profile extends React.Component {
 
     render() {
         return (
-            <Page title="Profile">
-                <div className="row">
-                    <div className="col-sm-12 col-md-6">
-                        <Card elevation={ Elevation.THREE }>
-                            <h4>Add Listing</h4>
-                            <Label text="Account Address">
-                                <InputGroup
-                                    onChange={(event) => {
-                                        this.state.addListing.addr = event.target.value;
-                                        this.setState({ addListing: this.state.addListing });
-                                    }}
-                                    intent="primary"/>
-                            </Label>
-                            <Label text="Listing Title">
-                                <InputGroup
-                                    onChange={(event) => {
-                                        this.state.addListing.title = event.target.value;
-                                        this.setState({ addListing: this.state.addListing });
-                                    }}
-                                    intent="primary"/>
-                            </Label>
-                            <Label text="Description">
-                                <InputGroup
-                                    onChange={(event) => {
-                                        this.state.addListing.desc = event.target.value;
-                                        this.setState({ addListing: this.state.addListing });
-                                    }}
-                                    intent="primary"/>
-                            </Label>
-                            <Button
-                                onClick={ this.handleAddListing.bind(this) }
-                                intent="primary"
-                            >Add Listing</Button>
-                        </Card>
-                    </div>
+            <div className="row">
+                <div className="col-sm-12 col-md-6">
+                    <Card elevation={ Elevation.THREE }>
+                        <h4>Add Listing</h4>
+                        <Label text="Account Address">
+                            <InputGroup
+                                onChange={(event) => {
+                                    this.state.addListing.addr = event.target.value;
+                                    this.setState({ addListing: this.state.addListing });
+                                }}
+                                intent="primary"/>
+                        </Label>
+                        <Label text="Listing Title">
+                            <InputGroup
+                                onChange={(event) => {
+                                    this.state.addListing.title = event.target.value;
+                                    this.setState({ addListing: this.state.addListing });
+                                }}
+                                intent="primary"/>
+                        </Label>
+                        <Label text="Description">
+                            <InputGroup
+                                onChange={(event) => {
+                                    this.state.addListing.desc = event.target.value;
+                                    this.setState({ addListing: this.state.addListing });
+                                }}
+                                intent="primary"/>
+                        </Label>
+                        <Button
+                            onClick={ this.handleAddListing.bind(this) }
+                            intent="primary"
+                        >Add Listing</Button>
+                    </Card>
                 </div>
-            </Page>
+            </div>
         )
     }
 }

@@ -19,7 +19,7 @@
     }
 }
 
-.header-outer > div, .navbar-row > div, .footer-lower > div {
+.header-outer > div, .footer-lower > div {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -28,15 +28,11 @@
     @extend .container;
 }
 
-.navbar-row > div {
-    justify-content: flex-end;
-}
-
 .header-outer {
     font-size: 2rem;
 }
 
-.header-outer, .navbar-row, .footer-upper {
+.header-outer, .footer-upper {
     background-color: $primary;
     padding: 1rem;
     color: white;
