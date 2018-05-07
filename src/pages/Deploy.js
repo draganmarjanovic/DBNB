@@ -1,13 +1,11 @@
 import React from "react";
 import Web3 from "web3";
-import { Page } from "../components/Layout";
 import { Card, Elevation } from "@blueprintjs/core";
 
 import "../styles/grid.scss";
 
 import config from "../config";
 import HouseManagerABI from "../contracts/HouseManagement.json";
-import HouseABI from "../contracts/House.json";
 
 class Deploy extends React.Component {
     constructor(props) {

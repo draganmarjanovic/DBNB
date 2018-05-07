@@ -1,6 +1,5 @@
 import React from "react";
 import Web3 from "web3";
-import { Page } from "../components/Layout";
 import { Card, Elevation } from "@blueprintjs/core";
 
 import "../styles/grid.scss";
@@ -19,7 +18,7 @@ class Home extends React.Component {
     }
 
     fetchHouses() {
-        if (this.state.web3 != undefined) {
+        if (this.state.web3 !== undefined) {
             let HouseManager = new this.state.web3.eth.Contract(HouseManagerABI.abi, config.HouseManagerAddr);
 
             let houseListings = [];
@@ -53,7 +52,7 @@ class Home extends React.Component {
     render() {
 
         let listingResult = [];
-        if (this.state.listings != undefined) {
+        if (this.state.listings !== undefined) {
             this.state.listings.forEach((listing) => {
                 console.log(listing);
                 listingResult.push((

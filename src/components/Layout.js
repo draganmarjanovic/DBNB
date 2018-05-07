@@ -1,6 +1,6 @@
 import React from "react";
-import { Link, Redirect } from "react-router-dom";
-import { Navbar, NavbarGroup, NavbarHeading, NavbarDivider, Alignment, Icon, Tabs, Tab } from "@blueprintjs/core";
+import { Link } from "react-router-dom";
+import { Tabs, Tab } from "@blueprintjs/core";
 
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";

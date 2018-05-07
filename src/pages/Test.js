@@ -1,6 +1,5 @@
 import React from "react";
 import { Page, Panel } from "../components/Layout";
-import { Button } from "../components/Input";
 
 import Web3 from "web3";
 

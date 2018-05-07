@@ -1,13 +1,11 @@
 import React from "react";
 import Web3 from "web3";
-import { Page, Panel } from "../components/Layout";
 import { Button, InputGroup, Label, Card, Elevation } from "@blueprintjs/core";
 
 import "../styles/grid.scss";
 
 import config from "../config";
 import HouseManagerABI from "../contracts/HouseManagement.json";
-import HouseABI from "../contracts/House.json";
 
 class Profile extends React.Component {
     constructor(props) {
@@ -29,7 +27,7 @@ class Profile extends React.Component {
     }
 
     handleAddListing() {
-        if (this.state.web3 != undefined) {
+        if (this.state.web3 !== undefined) {
             let HouseManager = new this.state.web3.eth.Contract(HouseManagerABI.abi, config.HouseManagerAddr);
 
             let addHouse = HouseManager.methods.addHouse(this.state.addListing.title, this.state.addListing.desc);
@@ -39,7 +37,7 @@ class Profile extends React.Component {
                     gas: (result + 150)
                 });
             }).then((result) => {
-                if (result != {}) {
+                if (result !== {}) {
                     // The transaction was successful
                 }
             }).catch((error) => {
