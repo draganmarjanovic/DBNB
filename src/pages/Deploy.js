@@ -1,7 +1,7 @@
 import React from "react";
 import Web3 from "web3";
-import { Page, Panel } from "../components/Layout";
-import { Button } from "../components/Input";
+import { Page } from "../components/Layout";
+import { Card, Elevation } from "@blueprintjs/core";
 
 import "../styles/grid.scss";
 
@@ -48,9 +48,10 @@ class Deploy extends React.Component {
             <Page title="Deploying">
                 <div className="row">
                     <div className="col-sm-12">
-                        <Panel title="Deployed">
+                        <Card elevation={ Elevation.THREE }>
+                            <h4>Deployed</h4>
                             <p>House Manager: { this.state.houseManagerAddr }</p>
-                        </Panel>
+                        </Card>
                     </div>
                 </div>
             </Page>
