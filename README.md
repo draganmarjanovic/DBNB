@@ -16,4 +16,4 @@ When you are first running the app please make sure that there is a symbolic lin
 Javascript code for components are added under `src/components`. Styling for these components is under `src/styles/components`
 
 ### Pages
-Pages code is located under `src/pages`. With adding pages, if the page is newly created make sure that a route exists under `src/App.js`
+Pages code is located under `src/pages`. With adding pages, if the page is newly created make sure that a route exists under `src/components/Layout.js`
