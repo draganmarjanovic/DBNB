@@ -7,10 +7,17 @@ import HouseABI from "../contracts/House.json";
 const web3 = new Web3(config.addr);
 
 class HouseManager {
+    /**
+     * Class for handling management of houses, this is direct communication connection to the instance running on the blockchain
+     */
     constructor() {
         this.HouseManagerContract = new web3.eth.Contract(HouseManagerABI.abi, config.HouseManagerAddr);
     }
 
+    /**
+     * Gets all the houses and returns them as a promise. The promise will be resolved to an array
+     * @returns {Promise} Promise with a resolution of an arry of accounts
+     */
     getAllHouses() {
         return this.HouseManagerContract.methods.getAllHouses().call().then((result) => {
             let houseList = [];
@@ -24,11 +31,19 @@ class HouseManager {
 }
 
 class House {
+    /**
+     * Class to help manage and control Houses on the blockchain
+     * @param {string} contractAddr Address of the House on the blockchain
+     */
     constructor(contractAddr) {
         this.contractAddr = contractAddr;
         this.HouseContract = new web3.eth.Contract(HouseABI.abi, contractAddr);
     }
 
+    /**
+     * Loads all the data of the account from the blockchain
+     * @returns {Promise} Promise which will resolve to this object
+     */
     load() {
         return this.HouseContract.methods.getTitle().call().then((title) => {
             this.title = title;
@@ -39,6 +54,10 @@ class House {
         });
     }
 
+    /**
+     * Gets the title of the House object
+     * @returns {string} Title associated with the House
+     */
     getTitle() {
         if (this.title === undefined) {
             this.load();
@@ -46,6 +65,10 @@ class House {
         return this.title;
     }
 
+    /**
+     * Gets the description of the House object
+     * @returns {string} Description associated with the House
+     */
     getDescription() {
         if (this.desc === undefined) {
             this.load();
@@ -53,6 +76,10 @@ class House {
         return this.desc;
     }
 
+    /**
+     * Gets the id of the House object
+     * @returns {string} ID of the contract on the blockchain
+     */
     getID() {
         return this.contractAddr;
     }

@@ -6,10 +6,10 @@ import AccountABI from "../contracts/Account.json";
 
 const web3 = new Web3(config.addr);
 
-/**
- * Class for handling management of accounts, this is direct communication connection the instance running on the blockchain
- */
 class AccountManager {
+    /**
+     * Class for handling management of accounts, this is direct communication connection to the instance running on the blockchain
+     */
     constructor() {
         this.AccountManagerContract = new web3.eth.Contract(AccountManagerABI.abi, config.AccountManagerAddr);
     }
@@ -63,10 +63,11 @@ class AccountManager {
     }
 }
 
-/**
- * Class to help manage and control Accounts on the blockchain
- */
 class Account {
+    /**
+     * Class to help manage and control Accounts on the blockchain
+     * @param {string} contractAddr Address of the Account on the blockchain
+     */
     constructor(contractAddr) {
         this.contractAddr = contractAddr;
 
