@@ -17,8 +17,16 @@ contract Account {
         return _name;
     }
 
+    function setName(string name) public {
+        _name = name;
+    }
+
     function getEmail() public view returns (string) {
         return _email;
+    }
+
+    function setEmail(string email) public {
+        _email = email;
     }
 
     function getOwner() public view returns (address) {
