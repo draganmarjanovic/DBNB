@@ -37,12 +37,20 @@ contract Account {
 contract AccountManagement {
 
     Account[] private accounts;
+    mapping(address => Account) accountsMap;
 
     function addAccount(string name, string email) public {
-        accounts.push(new Account(name, email, msg.sender));
+        Account a = new Account(name, email, msg.sender);
+        require(accountsMap[msg.sender] == address(0));
+        accounts.push(a);
+        accountsMap[msg.sender] = a;
     }
 
     function getAllAccounts() public view returns (Account[]) {
         return accounts;
+    }
+
+    function getAccount(address a) public view returns (Account) {
+        return accountsMap[a];
     }
 }

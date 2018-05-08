@@ -51,11 +51,24 @@ class Account extends React.Component {
     }
 
     handleSearchAccount() {
-        if (this.state.accountListings !== undefined) {
-            this.state.accountListings.forEach((account) => {
-                if (account.accountID === this.state.searchAddr) {
-                    this.setState({ searchAccount: account });
-                }
+        if (this.state.web3 !== undefined) {
+            let AccountManager = new this.state.web3.eth.Contract(AccountManagerABI.abi, config.AccountManagerAddr);
+
+            AccountManager.methods.getAccount(this.state.searchAddr).call().then((result) => {
+                let Account = new this.state.web3.eth.Contract(AccountABI.abi, result);
+
+                return Account.methods.getName().call().then((name) => {
+                    return Account.methods.getEmail().call().then((email) => {
+                        return Account.methods.getOwner().call().then((accountID) => {
+                            this.setState({ searchAccount: {
+                                id: result,
+                                name, email, accountID
+                            } });
+                        });
+                    });
+                });
+            }).catch((error) => {
+                console.error(error);
             });
         }
     }
