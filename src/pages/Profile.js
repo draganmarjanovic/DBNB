@@ -55,24 +55,21 @@ class Profile extends React.Component {
                         <Label text="Account Address">
                             <InputGroup
                                 onChange={(event) => {
-                                    this.state.addListing.addr = event.target.value;
-                                    this.setState({ addListing: this.state.addListing });
+                                    this.setState({ addListing: {...this.state.addListing, addr: event.target.value} });
                                 }}
                                 intent="primary"/>
                         </Label>
                         <Label text="Listing Title">
                             <InputGroup
                                 onChange={(event) => {
-                                    this.state.addListing.title = event.target.value;
-                                    this.setState({ addListing: this.state.addListing });
+                                    this.setState({ addListing: {...this.state.addListing, title: event.target.value} });
                                 }}
                                 intent="primary"/>
                         </Label>
                         <Label text="Description">
                             <InputGroup
                                 onChange={(event) => {
-                                    this.state.addListing.desc = event.target.value;
-                                    this.setState({ addListing: this.state.addListing });
+                                    this.setState({ addListing: {...this.state.addListing, desc: event.target.value} });
                                 }}
                                 intent="primary"/>
                         </Label>
