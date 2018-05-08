@@ -57,9 +57,7 @@ class Account extends React.Component {
     fetchAccounts(callback) {
         AccountManager.getAllAccounts().then((results) => {
             this.setState({ accountListings: results });
-        }).catch((error) => {
-            console.error(error);
-        })
+        }).catch(console.error);
     }
 
     render() {
