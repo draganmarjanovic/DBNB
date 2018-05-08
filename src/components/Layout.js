@@ -5,6 +5,7 @@ import { Tabs, Tab } from "@blueprintjs/core";
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import Deploy from "../pages/Deploy";
+import Account from "../pages/Account";
 
 import "../styles/grid.scss";
 import "../styles/components/layout.scss";
@@ -20,6 +21,7 @@ export class Page extends React.Component {
                             <Tabs.Expander />
                             <Tab id="home" title="Home" panel={<Home />} />
                             <Tab id="profile" title="Profile" panel={<Profile />} />
+                            <Tab id="account" title="Account" panel={<Account />} />
                             <Tab id="deploy" title="Deploy" panel={<Deploy />} />
                         </Tabs>
                     </div>

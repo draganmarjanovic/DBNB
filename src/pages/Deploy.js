@@ -6,13 +6,15 @@ import "../styles/grid.scss";
 
 import config from "../config";
 import HouseManagerABI from "../contracts/HouseManagement.json";
+import AccountManagerABI from "../contracts/AccountManagement.json";
 
 class Deploy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             web3: undefined,
-            houseManagerAddr: ""
+            houseManagerAddr: "",
+            accountManagerAddr: ""
         };
     }
 
@@ -25,6 +27,13 @@ class Deploy extends React.Component {
             data: HouseManagerABI.bytecode,
             gas: 1500000
         });
+
+        let newAccountManager = new web3.eth.Contract(AccountManagerABI.abi, {
+            data: AccountManagerABI.bytecode,
+            gas: 1500000
+        });
+
+
 
         let deployedHouseManager = newHouseManager.deploy({
             data: HouseManagerABI.bytecode,
@@ -39,6 +48,21 @@ class Deploy extends React.Component {
         }).catch((error) => {
             console.error(error);
         });
+
+        let deployedAccountManager = newAccountManager.deploy({
+            data: AccountManagerABI.bytecode
+        });
+        deployedAccountManager.estimateGas().then((result) => {
+            return deployedAccountManager.send({
+                from: config.mainAccount,
+                gas: (result + 250)
+            });
+        }).then((newContract) => {
+            this.setState({ accountManagerAddr: newContract.options.address });
+        }).catch((error) => {
+            console.error(error);
+        });
+
     }
 
     render() {
@@ -48,10 +72,11 @@ class Deploy extends React.Component {
                     <Card elevation={ Elevation.THREE }>
                         <h4>Deployed</h4>
                         <p>House Manager: { this.state.houseManagerAddr }</p>
+                        <p>Account Manager: { this.state.accountManagerAddr }</p>
                     </Card>
                 </div>
             </div>
-        )
+        );
     }
 }
 
