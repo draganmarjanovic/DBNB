@@ -1,12 +1,7 @@
 import React from "react";
-import Web3 from "web3";
 import { Card, Elevation } from "@blueprintjs/core";
 
-import "../styles/grid.scss";
-
-import config from "../config";
-import HouseManagerABI from "../contracts/HouseManagement.json";
-import HouseABI from "../contracts/House.json";
+import HouseManagement from "../lib/HouseManagement";
 
 class Home extends React.Component {
     constructor(props) {
@@ -18,48 +13,25 @@ class Home extends React.Component {
     }
 
     fetchHouses() {
-        if (this.state.web3 !== undefined) {
-            let HouseManager = new this.state.web3.eth.Contract(HouseManagerABI.abi, config.HouseManagerAddr);
-
-            let houseListings = [];
-
-            HouseManager.methods.getAllHouses().call().then((result) => {
-                result.forEach((blockID) => {
-                    let house = new this.state.web3.eth.Contract(HouseABI.abi, blockID);
-                    let houseList = {
-                        id: blockID
-                    };
-                    house.methods.getTitle().call().then((title) => {
-                        house.methods.getDescription().call().then((desc) => {
-                            houseList.title = title;
-                            houseList.desc = desc;
-                            houseListings.push(houseList);
-                            this.setState({ listings: houseListings });
-                        });
-                    });
-                });
-            });
-        }
+        HouseManagement.getAllHouses().then((results) => {
+            this.setState({ listings: results });
+        }).catch(console.error);
     }
 
     componentDidMount() {
-        let web3 = new Web3(config.addr);
-        this.setState({ web3 });
-        web3.eth.defaultAccount = web3.eth.accounts[0];
-        setTimeout(this.fetchHouses.bind(this), 0);
+        this.fetchHouses();
     }
 
     render() {
 
         let listingResult = [];
         if (this.state.listings !== undefined) {
-            this.state.listings.forEach((listing) => {
-                console.log(listing);
+            this.state.listings.forEach((house) => {
                 listingResult.push((
-                    <div className="col-md-6 col-sm-12" key={ listing.id }>
+                    <div className="col-md-6 col-sm-12" key={ house.getID() }>
                         <Card elevation={ Elevation.THREE }>
-                            <h4>{ listing.title }</h4>
-                            { listing.desc }
+                            <h4>{ house.getTitle() }</h4>
+                            { house.getDescription() }
                         </Card>
                     </div>
                 ))
