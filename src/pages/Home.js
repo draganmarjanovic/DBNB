@@ -57,7 +57,7 @@ class Home extends React.Component {
                 console.log(listing);
                 listingResult.push((
                     <div className="col-md-6 col-sm-12" key={ listing.id }>
-                        <Card>
+                        <Card elevation={ Elevation.THREE }>
                             <h4>{ listing.title }</h4>
                             { listing.desc }
                         </Card>
@@ -67,7 +67,7 @@ class Home extends React.Component {
         }
 
         return (
-            <div className="row">
+            <div className="row homeRow">
                 <div className="col-sm-12">
                     <Card elevation={ Elevation.THREE }>
                         <h4>Huge</h4>
