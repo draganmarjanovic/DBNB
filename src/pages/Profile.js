@@ -1,6 +1,6 @@
 import React from "react";
 import Web3 from "web3";
-import { Button, InputGroup, Label, Card, Elevation } from "@blueprintjs/core";
+import { Button, InputGroup, Label, Card, Elevation, TextArea } from "@blueprintjs/core";
 
 import "../styles/grid.scss";
 
@@ -67,11 +67,14 @@ class Profile extends React.Component {
                                 intent="primary"/>
                         </Label>
                         <Label text="Description">
-                            <InputGroup
+                            <TextArea
+                                large={ false }
                                 onChange={(event) => {
                                     this.setState({ addListing: {...this.state.addListing, desc: event.target.value} });
                                 }}
-                                intent="primary"/>
+                                intent="primary"
+                                style={{ width: "100%" }}
+                                rows={ 5 }/>
                         </Label>
                         <Button
                             onClick={ this.handleAddListing.bind(this) }
