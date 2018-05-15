@@ -1,6 +1,11 @@
 pragma solidity ^0.4.21;
 
+import "House.sol";
+import "Rating.sol";
+
 contract Account {
+
+    mapping(address => Rating) private rated;
 
     address private accountOwner;
 
@@ -31,6 +36,16 @@ contract Account {
 
     function getOwner() public view returns (address) {
         return accountOwner;
+    }
+
+    function rateHouse(House house, uint8 _stars, bytes32 _title, string _comment) external {
+        require(msg.sender == accountOwner);
+        require(rated[address(house)] == address(0), "You have already rated this house");
+        //TODO: require on user stayed at house
+
+        Rating rating = new Rating(_stars, _title, _comment);
+        rated[address(house)] = rating;
+        house.addRating(rating);
     }
 }
 

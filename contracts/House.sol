@@ -1,6 +1,9 @@
 pragma solidity ^0.4.21;
 
+import "Rating.sol";
+
 contract House {
+    Rating[] private ratings;
 
     address private homeOwner;
 
@@ -23,6 +26,11 @@ contract House {
 
     function getDescription() public view returns (string) {
         return _desc;
+    }
+
+    function addRating(Rating rating) external {
+        //TODO: require on user stayed at house
+        ratings.push(rating);
     }
 }
 
