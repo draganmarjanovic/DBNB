@@ -15,7 +15,7 @@ contract Rating {
         stars = _stars;
     }
 
-    function getStars() public view returns (string) {
+    function getStars() public view returns (uint8) {
         return stars;
     }
 
