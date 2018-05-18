@@ -16,7 +16,8 @@ class Profile extends React.Component {
             addListing: {
                 addr: "",
                 title: "",
-                desc: ""
+                desc: "",
+                cost: ""
             }
         };
     }
@@ -30,7 +31,7 @@ class Profile extends React.Component {
         if (this.state.web3 !== undefined) {
             let HouseManager = new this.state.web3.eth.Contract(HouseManagerABI.abi, config.HouseManagerAddr);
 
-            let addHouse = HouseManager.methods.addHouse(this.state.addListing.title, this.state.addListing.desc);
+            let addHouse = HouseManager.methods.addHouse(this.state.addListing.title, this.state.addListing.desc, this.state.addListing.cost);
             addHouse.estimateGas().then((result) => {
                 return addHouse.send({
                     from: this.state.addListing.addr,
@@ -63,6 +64,13 @@ class Profile extends React.Component {
                             <InputGroup
                                 onChange={(event) => {
                                     this.setState({ addListing: {...this.state.addListing, title: event.target.value} });
+                                }}
+                                intent="primary"/>
+                        </Label>
+                        <Label text="Cost per night">
+                            <InputGroup
+                                onChange={(event) => {
+                                    this.setState({ addListing: {...this.state.addListing, cost: event.target.value} });
                                 }}
                                 intent="primary"/>
                         </Label>

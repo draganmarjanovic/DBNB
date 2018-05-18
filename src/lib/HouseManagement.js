@@ -50,6 +50,9 @@ class House {
             return this.HouseContract.methods.getDescription().call();
         }).then((desc) => {
             this.desc = desc;
+            return this.HouseContract.methods.getPrice().call();
+        }).then((price) => {
+            this.price = price;
             return this;
         });
     }
@@ -74,6 +77,13 @@ class House {
             this.load();
         }
         return this.desc;
+    }
+
+    getPrice() {
+        if (this.price === undefined) {
+            this.load();
+        }
+        return this.price;
     }
 
     /**
