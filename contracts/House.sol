@@ -1,6 +1,6 @@
 pragma solidity ^0.4.21;
 
-import "Rating.sol";
+import "./Rating.sol";
 
 contract House {
 

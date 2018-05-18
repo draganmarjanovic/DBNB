@@ -1,7 +1,7 @@
 pragma solidity ^0.4.21;
 
-import "House.sol";
-import "Rating.sol";
+import "./House.sol";
+import "./Rating.sol";
 
 contract Account {
 
