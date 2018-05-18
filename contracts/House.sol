@@ -14,14 +14,14 @@ contract House {
     Booking[] private bookings;
     Rating[] private ratings;
 
-    address private homeOwner;
+    address private _homeOwner;
 
     string private _title;
     string private _desc;
     uint16 private _price; // price per day
 
-    constructor(string title, string desc, uint16 price) public {
-        homeOwner = msg.sender;
+    constructor(string title, string desc, uint16 price, address homeOwner) public {
+        _homeOwner = homeOwner;
         _title = title;
         _desc = desc;
         _price = price;
@@ -32,7 +32,7 @@ contract House {
     }
 
     function getOwner() public view returns (address) {
-        return homeOwner;
+        return _homeOwner;
     }
 
     function getDescription() public view returns (string) {
@@ -83,7 +83,7 @@ contract HouseManagement {
     House[] private houses;
 
     function addHouse(string title, string desc, uint16 price) public {
-        House house = new House(title, desc, price);
+        House house = new House(title, desc, price, msg.sender);
         houses.push(house);
         owned[msg.sender].push(house);
     }
