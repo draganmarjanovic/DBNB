@@ -31,7 +31,8 @@ contract Account {
 
     AccountBooking[] private _bookings;
 
-    mapping(address => Rating) private rated;
+    Rating[] private rated;
+    mapping(address => Rating) private ratedMap;
 
     address private accountOwner;
 
@@ -66,11 +67,12 @@ contract Account {
 
     function rateHouse(House house, uint8 _stars, bytes32 _title, string _comment) external {
         require(msg.sender == accountOwner);
-        require(rated[address(house)] == address(0), "You have already rated this house");
+        require(ratedMap[address(house)] == address(0), "You have already rated this house");
         //TODO: require on user stayed at house
 
         Rating rating = new Rating(_stars, _title, _comment);
-        rated[address(house)] = rating;
+        ratedMap[address(house)] = rating;
+        rated.push(rating);
         house.addRating(rating);
     }
 
