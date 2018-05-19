@@ -12,7 +12,7 @@ contract House {
         uint8 duration; // days
     }
 
-    mapping(uint64 => bool) public dayToBooking;
+    mapping(uint64 => Booking) public dayToBooking;
     mapping(address => Rating) public ratings;
 
     address private _homeOwner;
@@ -53,13 +53,21 @@ contract House {
     }
 
     function makeBooking(Account account, uint64 start, uint8 duration) public {
+        require(duration > 0);
+
         for (uint64 i = 0; i < duration; i++) {
-            dayToBooking[start + i] = true;
+            if (dayToBooking[start + i].guest != address(0)) {
+                revert("Booking already exists");
+            }
+            dayToBooking[start + i] = Booking(account, start, duration);
         }
     }
 
     function isBooked(uint64 timeStamp) public view returns (bool) {
-        return dayToBooking[timeStamp];
+        if (dayToBooking[timeStamp].guest == address(0)) {
+            return false;
+        }
+        return true;
     }
 }
 

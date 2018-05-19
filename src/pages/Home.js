@@ -89,6 +89,13 @@ class Home extends React.Component {
             } else {
                 console.log("Failed");
             }
+            return account.confirmBooking(house, start, duration);
+        }).then((result) => {
+            if (result) {
+                console.log("Booking Confirmed");
+            } else {
+                console.log("Failed");
+            }
         }).catch((error) => {
             console.error(error);
         });

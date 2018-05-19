@@ -84,6 +84,20 @@ class Account extends React.Component {
             });
         }
 
+        let bookingsList = [];
+        if (this.state.searchAccount !== undefined) {
+            this.state.searchAccount.getBookings().forEach((booking) => {
+                bookingsList.push((
+                    <div key={ booking.contractAddr }>
+                        <div>House: { booking.house }</div>
+                        <div>Start: { booking.start }</div>
+                        <div>Duration: { booking.duration }</div>
+                        <br />
+                    </div>
+                ))
+            });
+        }
+
         return (
             <div>
 
@@ -174,6 +188,8 @@ class Account extends React.Component {
                                         <br /><br />
                                         <p>Name: { this.state.searchAccount.getName() }</p>
                                         <p>Email: { this.state.searchAccount.getEmail() }</p>
+                                        <h6>Bookings</h6>
+                                        { bookingsList }
                                     </Card>
                                 </div>
                             }

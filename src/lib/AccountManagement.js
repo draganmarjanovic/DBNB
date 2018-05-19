@@ -3,6 +3,7 @@ import Web3 from "web3";
 import config from "../config";
 import AccountManagerABI from "../contracts/AccountManagement.json";
 import AccountABI from "../contracts/Account.json";
+import AccountBookingABI from "../contracts/AccountBooking.json";
 
 const web3 = new Web3(config.addr);
 
@@ -66,6 +67,26 @@ class AccountManager {
     }
 }
 
+class AccountBooking {
+    constructor(contractAddr) {
+        this.contractAddr = contractAddr;
+        this.AccountBookingContract = new web3.eth.Contract(AccountBookingABI.abi, contractAddr);
+    }
+
+    load() {
+        return this.AccountBookingContract.methods.getHouse().call().then((house) => {
+            this.house = house;
+            return this.AccountBookingContract.methods.getStart().call();
+        }).then((start) => {
+            this.start = start;
+            return this.AccountBookingContract.methods.getDuration().call();
+        }).then((duration) => {
+            this.duration = duration;
+            return this;
+        });
+    }
+}
+
 class Account {
     /**
      * Class to help manage and control Accounts on the blockchain
@@ -90,6 +111,16 @@ class Account {
             return this.AccountContract.methods.getOwner().call();
         }).then((accountID) => {
             this.accountID = accountID;
+            return this.AccountContract.methods.getBookings().call();
+        }).then((bookings) => {
+            let bookingsList = [];
+            bookings.forEach((bookingAddr) => {
+                bookingsList.push((new AccountBooking(bookingAddr)).load());
+            });
+            return Promise.all(bookingsList);
+        }).then((bookings) => {
+            console.log(bookings);
+            this.bookings = bookings;
             return this;
         });
     }
@@ -133,6 +164,28 @@ class Account {
             this.load();
         }
         return this.accountID;
+    }
+
+    confirmBooking(house, start, duration) {
+        let confirmBooking = this.AccountContract.methods.confirmBooking(house.contractAddr, start, duration);
+        return confirmBooking.estimateGas().then((result) => {
+            return confirmBooking.send({
+                from: this.getAccountID(),
+                gas: (result + 150)
+            });
+        }).then((result) => {
+            if (result !== {}) {
+                return true;
+            }
+            return false;
+        });
+    }
+
+    getBookings() {
+        if (this.bookings === undefined) {
+            this.load();
+        }
+        return this.bookings;
     }
 
     /**
