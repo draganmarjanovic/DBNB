@@ -119,7 +119,6 @@ class Account {
             });
             return Promise.all(bookingsList);
         }).then((bookings) => {
-            console.log(bookings);
             this.bookings = bookings;
             return this;
         });
