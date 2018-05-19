@@ -93,6 +93,10 @@ class House {
     getID() {
         return this.contractAddr;
     }
+
+    isBooked(timeStamp) {
+        return this.HouseContract.methods.isBooked(timeStamp).call();
+    }
 }
 
 export default new HouseManager();

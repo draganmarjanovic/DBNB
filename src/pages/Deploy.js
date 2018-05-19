@@ -7,6 +7,7 @@ import "../styles/grid.scss";
 import config from "../config";
 import HouseManagerABI from "../contracts/HouseManagement.json";
 import AccountManagerABI from "../contracts/AccountManagement.json";
+import BookingManagerABI from "../contracts/BookingManager.json";
 
 class Deploy extends React.Component {
     constructor(props) {
@@ -14,7 +15,8 @@ class Deploy extends React.Component {
         this.state = {
             web3: undefined,
             houseManagerAddr: "",
-            accountManagerAddr: ""
+            accountManagerAddr: "",
+            bookingManagerAddr: ""
         };
     }
 
@@ -25,12 +27,17 @@ class Deploy extends React.Component {
 
         let newHouseManager = new web3.eth.Contract(HouseManagerABI.abi, {
             data: HouseManagerABI.bytecode,
-            gas: 1500000
+            gas: 6721975
         });
 
         let newAccountManager = new web3.eth.Contract(AccountManagerABI.abi, {
             data: AccountManagerABI.bytecode,
-            gas: 1500000
+            gas: 6721975
+        });
+
+        let newBookingManager = new web3.eth.Contract(BookingManagerABI.abi, {
+            data: BookingManagerABI.bytecode,
+            gas: 6721975
         });
 
 
@@ -63,6 +70,20 @@ class Deploy extends React.Component {
             console.error(error);
         });
 
+        let deployedBookingManager = newBookingManager.deploy({
+            data: BookingManagerABI.bytecode
+        });
+        deployedBookingManager.estimateGas().then((result) => {
+            return deployedBookingManager.send({
+                from: config.mainAccount,
+                gas: (result + 250)
+            });
+        }).then((newContract) => {
+            this.setState({ bookingManagerAddr: newContract.options.address });
+        }).catch((error) => {
+            console.error(error);
+        });
+
     }
 
     render() {
@@ -73,6 +94,7 @@ class Deploy extends React.Component {
                         <h4>Deployed</h4>
                         <p>House Manager: { this.state.houseManagerAddr }</p>
                         <p>Account Manager: { this.state.accountManagerAddr }</p>
+                        <p>Booking Manager: { this.state.bookingManagerAddr }</p>
                     </Card>
                 </div>
             </div>

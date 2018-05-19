@@ -3,7 +3,33 @@ pragma solidity ^0.4.21;
 import "./House.sol";
 import "./Rating.sol";
 
+contract AccountBooking {
+    House _house;
+    uint64 _start;
+    uint8 _duration;
+
+    constructor(House house, uint64 start, uint8 duration) public {
+        _house = house;
+        _start = start;
+        _duration = duration;
+    }
+
+    function getHouse() public view returns (House) {
+        return _house;
+    }
+
+    function getStart() public view returns (uint64) {
+        return _start;
+    }
+
+    function getDuration() public view returns (uint8) {
+        return _duration;
+    }
+}
+
 contract Account {
+
+    AccountBooking[] private _bookings;
 
     mapping(address => Rating) private rated;
 
@@ -46,6 +72,17 @@ contract Account {
         Rating rating = new Rating(_stars, _title, _comment);
         rated[address(house)] = rating;
         house.addRating(rating);
+    }
+
+    function confirmBooking(House house, uint64 start, uint8 duration) public {
+        require(start > now);
+        require(duration > 0, "Duration must be strictly positive");
+
+        _bookings.push(new AccountBooking(house, start, duration));
+    }
+
+    function getBookings() public view returns (AccountBooking[]) {
+        return _bookings;
     }
 }
 

@@ -1,18 +1,19 @@
 pragma solidity ^0.4.21;
 
 import "./Rating.sol";
+import "./Accounts.sol";
 
 contract House {
 
     struct Booking {
-        address guest;
+        Account guest;
 
         uint64 start; //seconds since epoch UTC of start date 0000
         uint8 duration; // days
     }
 
-    Booking[] private bookings;
-    Rating[] private ratings;
+    mapping(uint64 => Booking) public dayToBooking;
+    mapping(address => Rating) public ratings;
 
     address private _homeOwner;
 
@@ -45,35 +46,32 @@ contract House {
 
     function addRating(Rating rating) external {
         //TODO: require on user stayed at house
-        ratings.push(rating);
+        require(ratings[msg.sender] == address(0), "Rating already exists");
+        ratings[msg.sender] = rating;
     }
 
-    function makeBooking(uint64 start, uint8 duration) public {
-        require (start > now);
-        require (duration > 0, "Duration must be strictly positive");
+    function makeBooking(Account account, uint64 start, uint8 duration) public {
+        require(start > now);
+        require(duration > 0, "Duration must be strictly positive");
 
-        if (isAvailable(start, duration)) {
-            //TODO: check address being saved is user, not contract
-            bookings.push(Booking(msg.sender, start, duration));
-        }
-    }
+        uint64 startDay = start / 86400;
 
-    function isAvailable(uint64 start, uint8 duration) public view returns (bool) {
-        uint64 end = getEnd(start, duration);
-
-        // check for conflict between requested and existing bookings
-        for (uint i = 0; i < bookings.length; ++i) {
-            Booking memory other = bookings[i];
-            uint64 otherEnd = getEnd(other.start, other.duration);
-            if ((start >= other.start && start < otherEnd) || end > other.start && end <= otherEnd) {
-                return false;
+        for (uint8 i = 0; i < duration; i++) {
+            if (dayToBooking[startDay + i].guest != address(0)) {
+                revert("Already contains booking");
             }
         }
-        return true;
+        for (uint8 j = 0; j < duration; j++) {
+            dayToBooking[startDay + i] = Booking(account, start, duration);
+        }
     }
 
-    function getEnd(uint64 start, uint8 duration) internal pure returns (uint64) {
-        return start + duration * 1 days;
+    function isBooked(uint64 timeStamp) public view returns (bool) {
+        uint64 startDay = timeStamp / 86400;
+        if (dayToBooking[startDay].guest != address(0)) {
+            return true;
+        }
+        return false;
     }
 }
 

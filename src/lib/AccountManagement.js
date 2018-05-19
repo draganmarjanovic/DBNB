@@ -42,6 +42,9 @@ class AccountManager {
      */
     getAccount(accountAddr) {
         return this.AccountManagerContract.methods.getAccount(accountAddr).call().then((result) => {
+            if (result === "0x0000000000000000000000000000000000000000") {
+                return undefined;
+            }
             let account = new Account(result);
             return account.load();
         });
