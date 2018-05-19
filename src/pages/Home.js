@@ -19,7 +19,8 @@ class Home extends React.Component {
             makeBooking: undefined,
             bookingAccount: undefined,
             makeNewBooking: undefined,
-            makeNewBookingSelected: undefined
+            makeNewBookingSelected: undefined,
+            makeNewBookingSelectedPicker: undefined
         };
     }
 
@@ -82,7 +83,7 @@ class Home extends React.Component {
         let start = this.state.makeNewBookingSelected;
         let duration = this.state.makeNewBooking.duration;
 
-        BookingManagement.addBooking(house, account, start, duration).then((result) => {
+        house.makeBooking(account, start, duration).then((result) => {
             if (result) {
                 console.log("Booking Made");
             } else {
@@ -91,6 +92,16 @@ class Home extends React.Component {
         }).catch((error) => {
             console.error(error);
         });
+
+        // BookingManagement.addBooking(house, account, start, duration).then((result) => {
+        //     if (result) {
+        //         console.log("Booking Made");
+        //     } else {
+        //         console.log("Failed");
+        //     }
+        // }).catch((error) => {
+        //     console.error(error);
+        // });
     }
 
     componentDidMount() {
@@ -150,7 +161,7 @@ class Home extends React.Component {
                                 onDayClick={(day, { selected }) => {
                                     if (selected === undefined) {
                                         let timeStamp = day.getTime() / 1000;
-                                        this.fetchAvailablity(timeStamp);
+                                        this.fetchAvailablity(Math.floor(timeStamp / 86400));
                                     }
                                     this.setState({ availablityDay: selected ? undefined : day, booked: undefined });
                                 }}
@@ -190,28 +201,19 @@ class Home extends React.Component {
                             <p>Account Name: { this.state.bookingAccount.getName() }</p>
                         }
 
-                        {/* <center>
+                        <center>
                             <DayPicker
-                                selectedDays={ this.state.makeNewBookingSelected }
+                                selectedDays={ this.state.makeNewBookingSelectedPicker }
                                 onDayClick={(day, { selected }) => {
-                                    if (selected === undefined) {
-                                        // eslint-disable-next-line
+                                    if (!selected) {
                                         let timeStamp = day.getTime() / 1000;
+                                        this.setState({ makeNewBookingSelected: Math.floor(timeStamp / 86400) });
                                     }
-                                    this.setState({ makeNewBookingSelected: selected ? undefined : day });
+                                    this.setState({ makeNewBookingSelectedPicker: selected ? undefined : day });
                                 }}
                             />
                         </center>
-                        <br /> */}
-
-                        <Label text="Booking Day">
-                            <InputGroup
-                                onChange={(event) => {
-                                    this.setState({ makeNewBookingSelected: event.target.value });
-                                }}
-                                intent="primary"
-                            />
-                        </Label>
+                        <br />
 
                         <Label text="Booking Duration">
                             <InputGroup

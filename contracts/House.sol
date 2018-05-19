@@ -53,20 +53,13 @@ contract House {
     }
 
     function makeBooking(Account account, uint64 start, uint8 duration) public {
-
-        // dayToBooking[5] = true;
-
         for (uint64 i = 0; i < duration; i++) {
-            dayToBooking[start] = true;
+            dayToBooking[start + i] = true;
         }
     }
 
-    function isBooked(uint64 timeStamp) public returns (bool) {
-        // emit LogDebug(startDay, dayToBooking[startDay]);
-        if (dayToBooking[timeStamp] == true) {
-            return true;
-        }
-        return false;
+    function isBooked(uint64 timeStamp) public view returns (bool) {
+        return dayToBooking[timeStamp];
     }
 }
 
