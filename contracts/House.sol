@@ -54,7 +54,7 @@ contract House {
         require(start > now);
         require(duration > 0, "Duration must be strictly positive");
 
-        uint64 startDay = start / (1 * day);
+        uint64 startDay = start / (1 days);
 
         for (uint8 i = 0; i < duration; i++) {
             if (dayToBooking[startDay + i].guest != address(0)) {
@@ -67,7 +67,7 @@ contract House {
     }
 
     function isBooked(uint64 timeStamp) public view returns (bool) {
-        uint64 startDay = timeStamp / (1 * day);
+        uint64 startDay = timeStamp / (1 days);
         if (dayToBooking[startDay].guest != address(0)) {
             return true;
         }

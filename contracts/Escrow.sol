@@ -37,7 +37,7 @@ contract Escrow {
     }
 
     function release_funds() public {
-        uint256 daysGone = (now / (1 * day)) - _start;
+        uint256 daysGone = (now / (1 days)) - _start;
         uint256 total = daysGone * _pricePerDay;
         uint256 toPay = total - sentAmount;
         sentAmount += uint16(toPay);
