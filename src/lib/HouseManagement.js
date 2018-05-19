@@ -38,6 +38,13 @@ class House {
     constructor(contractAddr) {
         this.contractAddr = contractAddr;
         this.HouseContract = new web3.eth.Contract(HouseABI.abi, contractAddr);
+        this.HouseContract.events.LogDebug((err, data) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(data);
+            }
+        });
     }
 
     /**
@@ -96,6 +103,21 @@ class House {
 
     isBooked(timeStamp) {
         return this.HouseContract.methods.isBooked(timeStamp).call();
+    }
+
+    makeBooking(account, start, duration) {
+        let makeBooking = this.HouseContract.methods.makeBooking(account.contractAddr, start, duration);
+        return makeBooking.estimateGas().then((result) => {
+            return makeBooking.send({
+                from: account.getAccountID(),
+                gas: (result + 150)
+            });
+        }).then((result) => {
+            if (result !== {}) {
+                return true;
+            }
+            return false;
+        });
     }
 }
 

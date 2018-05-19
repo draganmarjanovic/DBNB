@@ -78,7 +78,9 @@ contract Account {
         require(start > now);
         require(duration > 0, "Duration must be strictly positive");
 
-        _bookings.push(new AccountBooking(house, start, duration));
+        uint64 startDay = start / 86400;
+
+        _bookings.push(new AccountBooking(house, startDay, duration));
     }
 
     function getBookings() public view returns (AccountBooking[]) {

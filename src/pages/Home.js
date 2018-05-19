@@ -5,6 +5,7 @@ import "../../node_modules/react-day-picker/lib/style.css";
 
 import HouseManagement from "../lib/HouseManagement";
 import AccountManagement from "../lib/AccountManagement";
+import BookingManagement from "../lib/BookingManagement";
 
 class Home extends React.Component {
     constructor(props) {
@@ -42,10 +43,10 @@ class Home extends React.Component {
     fetchBookingAvailablity(timeStamp, duration) {
         this.setState({ booked: undefined });
         if (this.state.makeBooking) {
-            let dayStamp = timeStamp / 86400;
+            let dayStamp = timeStamp;
             let promiseList = [];
             for (let i = 0; i < duration; i++) {
-                let tempStamp = (dayStamp + i) * 86400;
+                let tempStamp = (dayStamp + i);
                 promiseList.push(this.state.makeBooking.isBooked(tempStamp));
             }
             Promise.all(promiseList).then((results) => {
@@ -70,6 +71,23 @@ class Home extends React.Component {
                 // TODO: Add some output here
             }
             this.setState({ bookingAccount: account });
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+
+    handleMakeBooking() {
+        let house = this.state.makeBooking;
+        let account = this.state.bookingAccount;
+        let start = this.state.makeNewBookingSelected;
+        let duration = this.state.makeNewBooking.duration;
+
+        BookingManagement.addBooking(house, account, start, duration).then((result) => {
+            if (result) {
+                console.log("Booking Made");
+            } else {
+                console.log("Failed");
+            }
         }).catch((error) => {
             console.error(error);
         });
@@ -172,7 +190,7 @@ class Home extends React.Component {
                             <p>Account Name: { this.state.bookingAccount.getName() }</p>
                         }
 
-                        <center>
+                        {/* <center>
                             <DayPicker
                                 selectedDays={ this.state.makeNewBookingSelected }
                                 onDayClick={(day, { selected }) => {
@@ -184,19 +202,28 @@ class Home extends React.Component {
                                 }}
                             />
                         </center>
-                        <br />
+                        <br /> */}
+
+                        <Label text="Booking Day">
+                            <InputGroup
+                                onChange={(event) => {
+                                    this.setState({ makeNewBookingSelected: event.target.value });
+                                }}
+                                intent="primary"
+                            />
+                        </Label>
 
                         <Label text="Booking Duration">
                             <InputGroup
                                 onChange={(event) => {
-                                    this.fetchBookingAvailablity(this.state.makeNewBookingSelected.getTime() / 1000, event.target.value);
+                                    this.fetchBookingAvailablity(this.state.makeNewBookingSelected, event.target.value);
                                     this.setState({ makeNewBooking: {...this.state.makeNewBooking, duration: event.target.value} });
                                 }}
                                 intent="primary"
                             />
                         </Label>
 
-                        { this.state.makeNewBooking !== undefined && this.state.makeBooking !== undefined && this.state.makeNewBooking.duration !== "" && this.state.booked === false &&
+                        { this.state.makeNewBooking !== undefined && this.state.makeBooking !== undefined && this.state.bookingAccount !== undefined && this.state.makeNewBooking.duration !== "" && this.state.booked === false &&
                             <div>
                                 <p>Total Cost: { this.state.makeNewBooking.duration * this.state.makeBooking.getPrice() }</p>
                                 <br /><br />
@@ -204,9 +231,7 @@ class Home extends React.Component {
                                     <Button intent="primary">Make Booking</Button>
                                     <div style={{ padding: "0.8rem" }}>
                                         <p>Are you sure you want to make a booking?</p>
-                                        <Button onClick={() => {
-                                                console.log("Make Booking");
-                                            }}
+                                        <Button onClick={ this.handleMakeBooking.bind(this) }
                                             intent="primary"
                                         >Confirm</Button>
                                     </div>

@@ -12,7 +12,7 @@ contract House {
         uint8 duration; // days
     }
 
-    mapping(uint64 => Booking) public dayToBooking;
+    mapping(uint64 => bool) public dayToBooking;
     mapping(address => Rating) public ratings;
 
     address private _homeOwner;
@@ -20,6 +20,8 @@ contract House {
     string private _title;
     string private _desc;
     uint16 private _price; // price per day
+
+    event LogDebug(uint64 iteration, address guest);
 
     constructor(string title, string desc, uint16 price, address homeOwner) public {
         _homeOwner = homeOwner;
@@ -51,24 +53,17 @@ contract House {
     }
 
     function makeBooking(Account account, uint64 start, uint8 duration) public {
-        require(start > now);
-        require(duration > 0, "Duration must be strictly positive");
 
-        uint64 startDay = start / 86400;
+        // dayToBooking[5] = true;
 
-        for (uint8 i = 0; i < duration; i++) {
-            if (dayToBooking[startDay + i].guest != address(0)) {
-                revert("Already contains booking");
-            }
-        }
-        for (uint8 j = 0; j < duration; j++) {
-            dayToBooking[startDay + i] = Booking(account, start, duration);
+        for (uint64 i = 0; i < duration; i++) {
+            dayToBooking[start] = true;
         }
     }
 
-    function isBooked(uint64 timeStamp) public view returns (bool) {
-        uint64 startDay = timeStamp / 86400;
-        if (dayToBooking[startDay].guest != address(0)) {
+    function isBooked(uint64 timeStamp) public returns (bool) {
+        // emit LogDebug(startDay, dayToBooking[startDay]);
+        if (dayToBooking[timeStamp] == true) {
             return true;
         }
         return false;
