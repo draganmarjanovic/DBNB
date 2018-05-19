@@ -20,7 +20,7 @@ export class Page extends React.Component {
                             <h3>DBNB</h3>
                             <Tabs.Expander />
                             <Tab id="home" title="Home" panel={<Home />} />
-                            <Tab id="profile" title="Profile" panel={<Profile />} />
+                            <Tab id="profile" title="Listing" panel={<Profile />} />
                             <Tab id="account" title="Account" panel={<Account />} />
                             <Tab id="deploy" title="Deploy" panel={<Deploy />} />
                         </Tabs>

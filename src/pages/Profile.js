@@ -13,6 +13,12 @@ class Profile extends React.Component {
         this.state = {
             web3: undefined,
             listings: undefined,
+            listingButton: {
+                text: "Add Listing",
+                intent: "primary",
+                loading: false,
+                disabled: false,
+            },
             addListing: {
                 addr: "",
                 title: "",
@@ -28,6 +34,13 @@ class Profile extends React.Component {
     }
 
     handleAddListing() {
+        console.info("Button Clicked, Booking is being made...")
+        this.setState ( {
+            listingButton: {
+                loading: true
+            }
+        })
+
         if (this.state.web3 !== undefined) {
             let HouseManager = new this.state.web3.eth.Contract(HouseManagerABI.abi, config.HouseManagerAddr);
 
@@ -40,10 +53,27 @@ class Profile extends React.Component {
             }).then((result) => {
                 if (result !== {}) {
                     // The transaction was successful
+                    this.setState({
+                        listingButton: {
+                            text: "Listing Successful!",
+                            intent: "success",
+                            loading: false,
+                        }
+                    })
+                    console.info("Transaction Successful!")
                 }
             }).catch((error) => {
+                this.setState({
+                    listingButton: {
+                        text: "Listing Unsuccessful.",
+                        intent: "warning",
+                        loading: false,
+                    }
+                })
                 console.error(error);
             });
+        } else {
+            console.error("Web3 uninitalized")
         }
     }
 
@@ -86,8 +116,9 @@ class Profile extends React.Component {
                         </Label>
                         <Button
                             onClick={ this.handleAddListing.bind(this) }
-                            intent="primary"
-                        >Add Listing</Button>
+                            intent={this.state.listingButton.intent}
+                            loading= { this.state.listingButton.loading }
+                        >{ this.state.listingButton.text }</Button>
                     </Card>
                 </div>
             </div>
