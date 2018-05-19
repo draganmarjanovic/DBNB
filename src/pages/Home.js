@@ -88,7 +88,7 @@ class Home extends React.Component {
                     <div className="col-md-6 col-sm-12" key={ house.getID() }>
                         <Card elevation={ Elevation.THREE }>
                             <h4 style={{ display: "inline-block" }}>{ house.getTitle() }</h4>
-                            <span style={{ float: "right" }}>${ house.getPrice() } PPPN</span><br />
+                            <span style={{ float: "right" }}>{ house.getPrice() } ETH per night </span><br />
                             <div>{ house.getDescription() }</div>
                             <br />
                             <ButtonGroup fill={ true }>
