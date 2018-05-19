@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Elevation, InputGroup, Label, Button, Tag, Intent, Dialog } from "@blueprintjs/core";
 
 import AccountManager from "../lib/AccountManagement";
+import { successToast, errorToast } from "../lib/Toaster";
 
 class Account extends React.Component {
     constructor(props) {
@@ -27,6 +28,14 @@ class Account extends React.Component {
     handleAddAccount() {
         AccountManager.addAccount(this.state.addProfile.name, this.state.addProfile.email, this.state.addProfile.addr).then((result) => {
             if (result) {
+                successToast("Account created!");
+                this.setState({
+                    addProfile: {
+                        addr: "",
+                        name: "",
+                        email: "",
+                    }
+                })
                 setTimeout(this.fetchAccounts.bind(this), 0);
             }
         }).catch((error) => {
@@ -180,6 +189,7 @@ class Account extends React.Component {
                                 onChange={(event) => {
                                     this.setState({ addProfile: {...this.state.addProfile, addr: event.target.value} });
                                 }}
+                                value={ this.state.addProfile.addr}
                                 intent="primary"/>
                         </Label>
                         <Label text="Account Name">
@@ -187,6 +197,7 @@ class Account extends React.Component {
                                 onChange={(event) => {
                                     this.setState({ addProfile: {...this.state.addProfile, name: event.target.value} });
                                 }}
+                                value={ this.state.addProfile.name }
                                 intent="primary"/>
                         </Label>
                         <Label text="Account Email">
@@ -194,6 +205,7 @@ class Account extends React.Component {
                                 onChange={(event) => {
                                     this.setState({ addProfile: {...this.state.addProfile, email: event.target.value} });
                                 }}
+                                value={this.state.addProfile.email}
                                 intent="primary"/>
                         </Label>
                         <Button

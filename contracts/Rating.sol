@@ -7,7 +7,7 @@ contract Rating {
     string private comment;
 
     constructor(uint8 _stars, bytes32 _title, string _comment) public {
-        require(0 <= _stars && _stars <=5, "Rating must be between 0 and 5 stars");
+        require(0 <= _stars && _stars <= 5, "Rating must be between 0 and 5 stars");
         require(_title.length > 0, "Title must be non-empty");
 
         title = _title;
