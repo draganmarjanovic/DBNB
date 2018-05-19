@@ -14,10 +14,10 @@ contract Escrow {
  
     // SHould it be address of homeOwner or House contract ? 
     constructor(uint16 start, uint16 end, uint16 pricePerDay, uint16 totalPrice, address renter, address homeOwner ) public {
-        _duration = (end-start); // compute how many days the renter is staying
+        _duration = (end - start); // compute how many days the renter is staying
 
         // totalPrice is for whole duration
-        require(address(this).balance >= (pricePerDay*_duration));
+        require(address(this).balance >= (pricePerDay * _duration));
 
         _ownerAgreed = false;
         _renterAgreed = false;
@@ -37,8 +37,8 @@ contract Escrow {
     }
 
     function release_funds() public {
-        uint256 daysGone = (now/86400) - _start;
-        uint256 total = daysGone*_pricePerDay;
+        uint256 daysGone = (now / (1 * day)) - _start;
+        uint256 total = daysGone * _pricePerDay;
         uint256 toPay = total - sentAmount;
         sentAmount += uint16(toPay);
         _owner.send(toPay);
