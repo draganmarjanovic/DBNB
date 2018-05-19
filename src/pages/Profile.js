@@ -6,6 +6,7 @@ import "../styles/grid.scss";
 
 import config from "../config";
 import HouseManagerABI from "../contracts/HouseManagement.json";
+import { successToast, errorToast } from "../lib/Toaster"
 
 class Profile extends React.Component {
     constructor(props) {
@@ -13,6 +14,9 @@ class Profile extends React.Component {
         this.state = {
             web3: undefined,
             listings: undefined,
+            listingButton: {
+                loading: false,
+            },
             addListing: {
                 addr: "",
                 title: "",
@@ -28,22 +32,52 @@ class Profile extends React.Component {
     }
 
     handleAddListing() {
+        console.info("Button Clicked, Booking is being made...")
+        this.setState ( {
+            listingButton: {
+                loading: true
+            }
+        })
+
         if (this.state.web3 !== undefined) {
             let HouseManager = new this.state.web3.eth.Contract(HouseManagerABI.abi, config.HouseManagerAddr);
 
             let addHouse = HouseManager.methods.addHouse(this.state.addListing.title, this.state.addListing.desc, this.state.addListing.cost);
-            addHouse.estimateGas().then((result) => {
-                return addHouse.send({
-                    from: this.state.addListing.addr,
-                    gas: (result + 150)
-                });
+            addHouse
+                .estimateGas()
+                .then((result) => {
+                    return addHouse.send({
+                        from: this.state.addListing.addr,
+                        gas: (result + 150)
+                    });
             }).then((result) => {
                 if (result !== {}) {
                     // The transaction was successful
+                    successToast( this.state.addListing.title + " was listed successfully!")
+                    this.setState({
+                        addListing: {
+                            addr: "",
+                            title: "",
+                            desc: "",
+                            cost: ""
+                        },
+                        listingButton: {
+                            loading: false,
+                        }
+                    })
+                    console.info("Transaction Successful!")
                 }
             }).catch((error) => {
+                errorToast( this.state.addListing.title + ' was not listed successfully.')
+                this.setState({
+                    listingButton: {
+                        loading: false,
+                    }
+                })
                 console.error(error);
             });
+        } else {
+            console.error("Web3 uninitalized")
         }
     }
 
@@ -58,6 +92,7 @@ class Profile extends React.Component {
                                 onChange={(event) => {
                                     this.setState({ addListing: {...this.state.addListing, addr: event.target.value} });
                                 }}
+                                value={ this.state.addListing.addr }
                                 intent="primary"/>
                         </Label>
                         <Label text="Listing Title">
@@ -65,6 +100,7 @@ class Profile extends React.Component {
                                 onChange={(event) => {
                                     this.setState({ addListing: {...this.state.addListing, title: event.target.value} });
                                 }}
+                                value={ this.state.addListing.title }
                                 intent="primary"/>
                         </Label>
                         <Label text="Cost per night">
@@ -72,6 +108,7 @@ class Profile extends React.Component {
                                 onChange={(event) => {
                                     this.setState({ addListing: {...this.state.addListing, cost: event.target.value} });
                                 }}
+                                value={ this.state.addListing.cost }
                                 intent="primary"/>
                         </Label>
                         <Label text="Description">
@@ -80,13 +117,15 @@ class Profile extends React.Component {
                                 onChange={(event) => {
                                     this.setState({ addListing: {...this.state.addListing, desc: event.target.value} });
                                 }}
+                                value = {this.state.addListing.desc }
                                 intent="primary"
                                 style={{ width: "100%" }}
                                 rows={ 5 }/>
                         </Label>
                         <Button
                             onClick={ this.handleAddListing.bind(this) }
-                            intent="primary"
+                            intent = "primary"
+                            loading={ this.state.listingButton.loading }
                         >Add Listing</Button>
                     </Card>
                 </div>
