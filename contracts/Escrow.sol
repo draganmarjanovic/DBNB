@@ -60,7 +60,7 @@ contract DBNBEscrow {
         // require(block.timestamp < startTime, "Cannot create an escrow for a start time that is already past.");
         _renter = renter;
         _owner = owner;
-        _costPerDay = costPerDay * 1 ether;
+        _costPerDay = costPerDay;
         _startTime = startTime;
         _numberOfDays = numberOfDays;
         _releaseTime = _startTime + (numberOfDays * TIME_DENOMINATION);
