@@ -88,7 +88,7 @@ contract Account {
         //TODO: check that user has stayed at house
 
         Rating review = new Rating(_stars, _title, _comment);
-        userReviewMap[msg.sender] = review;
+        userReviewsMap[msg.sender] = review;
         userReviews.push(review);
     }
 
