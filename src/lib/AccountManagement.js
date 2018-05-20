@@ -230,6 +230,26 @@ class Account {
         }
         return false;
     }
+
+    encodeTitle(title) {
+        return web3.utils.asciiToHex(title);
+    }
+
+    rateHouse(house, stars, title, comment) {
+        let encodedTitle = this.encodeTitle(title);
+        let rateHouse = this.AccountContract.methods.rateHouse(house.contractAddr, stars, encodedTitle, comment);
+        return rateHouse.estimateGas().then((result) => {
+            return rateHouse.send({
+                from: this.getAccountID(),
+                gas: (result + 150)
+            });
+        }).then((result) => {
+            if (result !== {}) {
+                return true;
+            }
+            return false;
+        });
+    }
 }
 
 export default new AccountManager();

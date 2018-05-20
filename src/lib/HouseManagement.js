@@ -3,6 +3,7 @@ import Web3 from "web3";
 import config from "../config";
 import HouseManagerABI from "../contracts/HouseManagement.json";
 import HouseABI from "../contracts/House.json";
+import Rating from "./Rating";
 
 const web3 = new Web3(config.addr);
 
@@ -60,6 +61,15 @@ class House {
             return this.HouseContract.methods.getPrice().call();
         }).then((price) => {
             this.price = price;
+            return this.HouseContract.methods.getRatings().call();
+        }).then((ratings) => {
+            let ratingsList = [];
+            ratings.forEach((ratingAddr) => {
+                ratingsList.push((new Rating(ratingAddr)).load());
+            });
+            return Promise.all(ratingsList);
+        }).then((ratings) => {
+            this.ratings = ratings;
             return this;
         });
     }
@@ -101,6 +111,13 @@ class House {
         return this.contractAddr;
     }
 
+    getRatings() {
+        if (this.ratings === undefined) {
+            this.load();
+        }
+        return this.ratings;
+    }
+
     isBooked(timeStamp) {
         return this.HouseContract.methods.isBooked(timeStamp).call();
     }
@@ -109,6 +126,22 @@ class House {
         let makeBooking = this.HouseContract.methods.makeBooking(account.contractAddr, start, duration);
         return makeBooking.estimateGas().then((result) => {
             return makeBooking.send({
+                from: account.getAccountID(),
+                gas: (result + 150)
+            });
+        }).then((result) => {
+            if (result !== {}) {
+                return true;
+            }
+            return false;
+        });
+    }
+
+    makeRating(account, stars, title, comment) {
+        let encodedTitle = web3.utils.asciiToHex(title);
+        let makeRating = this.HouseContract.methods.makeRating(account.contractAddr, stars, encodedTitle, comment);
+        return makeRating.estimateGas().then((result) => {
+            return makeRating.send({
                 from: account.getAccountID(),
                 gas: (result + 150)
             });
