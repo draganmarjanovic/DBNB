@@ -11,8 +11,6 @@ contract BookingManager {
     function addBooking(House house, Account account, uint64 start, uint8 duration) public {
         accountToHome[account].push(house);
         homeToAccount[house].push(account);
-        house.makeBooking(account, start, duration);
-        //account.confirmBooking(house, start, duration);
     }
 
     function getAllHomesBooked(Account acc) public view returns (House[]) {

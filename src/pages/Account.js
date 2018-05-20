@@ -8,39 +8,15 @@ class Account extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            web3: undefined,
-            addProfile: {
-                addr: "",
-                name: "",
-                email: ""
-            },
             accountListings: [],
             searchAddr: "",
-            searchAccount: undefined,
+            searchAccount: this.props.account,
             editAccount: undefined
         };
     }
 
     componentDidMount() {
         this.fetchAccounts();
-    }
-
-    handleAddAccount() {
-        AccountManager.addAccount(this.state.addProfile.name, this.state.addProfile.email, this.state.addProfile.addr).then((result) => {
-            if (result) {
-                successToast("Account created!");
-                this.setState({
-                    addProfile: {
-                        addr: "",
-                        name: "",
-                        email: "",
-                    }
-                })
-                setTimeout(this.fetchAccounts.bind(this), 0);
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
     }
 
     handleSearchAccount() {
@@ -195,40 +171,6 @@ class Account extends React.Component {
                             }
                         </div>
                     </div>
-                </div>
-
-                <div className="col-sm-12 col-md-6">
-                    <Card elevation={ Elevation.THREE }>
-                        <h4>Create Profile</h4>
-                        <Label text="Account Address">
-                            <InputGroup
-                                onChange={(event) => {
-                                    this.setState({ addProfile: {...this.state.addProfile, addr: event.target.value} });
-                                }}
-                                value={ this.state.addProfile.addr}
-                                intent="primary"/>
-                        </Label>
-                        <Label text="Account Name">
-                            <InputGroup
-                                onChange={(event) => {
-                                    this.setState({ addProfile: {...this.state.addProfile, name: event.target.value} });
-                                }}
-                                value={ this.state.addProfile.name }
-                                intent="primary"/>
-                        </Label>
-                        <Label text="Account Email">
-                            <InputGroup
-                                onChange={(event) => {
-                                    this.setState({ addProfile: {...this.state.addProfile, email: event.target.value} });
-                                }}
-                                value={this.state.addProfile.email}
-                                intent="primary"/>
-                        </Label>
-                        <Button
-                            onClick={ this.handleAddAccount.bind(this) }
-                            intent="primary"
-                        >Add Account</Button>
-                    </Card>
                 </div>
 
                 <div className="col-sm-12 col-md-6">
