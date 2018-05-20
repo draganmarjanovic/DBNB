@@ -7,6 +7,8 @@ import HouseManagement from "../lib/HouseManagement";
 import AccountManagement from "../lib/AccountManagement";
 import BookingManagement from "../lib/BookingManagement";
 
+import { successToast, errorToast } from "../lib/Toaster";
+
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -88,8 +90,10 @@ class Home extends React.Component {
         house.makeBooking(account, start, duration).then((result) => {
             if (result) {
                 console.log("Booking Made");
+                successToast("Booking Made Successfuly!");
             } else {
                 console.log("Failed");
+                errorToast("Booking failed!");
             }
             return account.confirmBooking(house, start, duration);
         }).then((result) => {
