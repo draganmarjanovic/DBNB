@@ -47,7 +47,7 @@ contract DBNBEscrow {
     }
 
     // Constructor
-    function DBNBEscrow (
+    constructor (
         address renter, 
         address owner, 
         uint256 costPerDay, // In ETH
