@@ -6,6 +6,7 @@ import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import Deploy from "../pages/Deploy";
 import Account from "../pages/Account";
+import Escrow from "../pages/Escrow";
 
 import "../styles/grid.scss";
 import "../styles/components/layout.scss";
@@ -21,6 +22,7 @@ export class Page extends React.Component {
                             <Tabs.Expander />
                             <Tab id="home" title="Home" panel={<Home />} />
                             <Tab id="profile" title="Listing" panel={<Profile />} />
+                            <Tab id="escrow" title="Escrow" panel={<Escrow />} />
                             <Tab id="account" title="Account" panel={<Account />} />
                             <Tab id="deploy" title="Deploy" panel={<Deploy />} />
                         </Tabs>
