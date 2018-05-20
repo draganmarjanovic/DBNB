@@ -9,6 +9,7 @@ import BookingManagement from "../lib/BookingManagement";
 
 import Web3 from "web3";
 import config from "../config";
+import { successToast, errorToast } from "../lib/Toaster";
 
 class Home extends React.Component {
     constructor(props) {
@@ -66,6 +67,7 @@ class Home extends React.Component {
                 }
                 this.setState({ booked });
             }).catch((error) => {
+                errorToast("Error getting availablity");
                 console.error(error);
             });
         }
@@ -78,18 +80,19 @@ class Home extends React.Component {
 
         house.makeBooking(this.props.account, start, duration).then((result) => {
             if (result) {
-                console.log("Booking Made");
             } else {
-                console.log("Failed");
+                errorToast("Failed Making Booking");
             }
             return this.props.account.confirmBooking(house, start, duration);
         }).then((result) => {
             if (result) {
-                console.log("Booking Confirmed");
+                successToast("Booking Made");
+                this.setState({ makeBooking: undefined });
             } else {
-                console.log("Failed");
+                errorToast("Failed Making Booking");
             }
         }).catch((error) => {
+            errorToast("Error Making Booking");
             console.error(error);
         });
 
@@ -112,10 +115,13 @@ class Home extends React.Component {
 
         house.makeRating(this.props.account, rating, title, comment).then((result) => {
             if (result) {
-                console.log("Success");
+                successToast("Review Completed Successfully");
+                this.setState({ makeReviewVals: {} });
+            } else {
+                errorToast("Failed to Review House");
             }
-            console.log("Failed");
         }).catch((error) => {
+            errorToast("Error Reviewing House");
             console.error(error);
         });
     }
