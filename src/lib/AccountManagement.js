@@ -102,7 +102,7 @@ class Account {
      * Loads all the data of the account from the blockchain
      * @returns Promise which will resolve to this object
      */
-    load() {
+    async load() {
         return this.AccountContract.methods.getName().call().then((name) => {
             this.name = name;
             return this.AccountContract.methods.getEmail().call();
@@ -120,6 +120,9 @@ class Account {
             return Promise.all(bookingsList);
         }).then((bookings) => {
             this.bookings = bookings;
+            return this.AccountContract.methods.getImageLocation().call();
+        }).then((imageLocation) => {
+            this._imageLocation = imageLocation;
             return this;
         });
     }
@@ -229,6 +232,31 @@ class Account {
             });
         }
         return false;
+    }
+
+    async setImageLocation(imageLocation) {
+        if (this._imageLocation !== imageLocation) {
+            console.log("IMAGE LOCAITON: " + imageLocation)
+            let setImageLocation = this.AccountContract.methods.setImageLocation(imageLocation);
+            return setImageLocation.estimateGas().then((result) => {
+                return setImageLocation.send({
+                    // TODO: Change this to this.getAccountID()
+                    from: "0x17d9e9402dC45be50D892993e60bcdBe9DbdEd2f",
+                    gas: (result + 150)
+                });
+            }).then((result) => {
+                if (result !== {}) {
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        return false;
+    }
+
+    getImageLocation() {
+        return this._imageLocation;
     }
 
     encodeTitle(title) {
