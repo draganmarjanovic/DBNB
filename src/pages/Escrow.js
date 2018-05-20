@@ -1,6 +1,7 @@
 import React from "react";
 import Web3 from "web3";
 import { Button, InputGroup, NumericInput, Label, Card, Elevation, TextArea } from "@blueprintjs/core";
+import { convertWei, convertTime } from "../lib/ether"
 
 import "../styles/grid.scss";
 
@@ -8,8 +9,6 @@ import config from "../config";
 import EscrowManager from "../lib/EscrowManagement";
 import EscrowABI from "../contracts/DBNBEscrow.json"
 import { successToast, errorToast } from "../lib/Toaster"
-
-const WEI = 1000000000000000000;
 
 class Escrow extends React.Component {
     constructor(props) {
@@ -25,6 +24,11 @@ class Escrow extends React.Component {
             },
             escrowContract: {
                 address: "",
+                item: "",
+            },
+            loadedEscrow: {
+                manager: undefined,
+                
             }
         };
     }
@@ -40,11 +44,12 @@ class Escrow extends React.Component {
 
     handleCreateEscrow() {
         console.log(this.state.createEscrow);
-        const sendEth = this.state.createEscrow.costPerDay * this.state.createEscrow.numberOfDays * WEI;
-        console.log(sendEth, sendEth/WEI);
-        const sendValue = this.state.createEscrow.costPerDay * this.state.createEscrow.numberOfDays;
-        console.log(Web3.utils.toWei(sendValue.toString(), "ether"));
+        const costPerDay = Web3.utils.toWei(this.state.createEscrow.costPerDay.toString(), "ether");
+        const amountToPay = Web3.utils.toWei((this.state.createEscrow.costPerDay * this.state.createEscrow.numberOfDays).toString(), "ether");
         
+        console.log("Cost Per Day", costPerDay);
+        console.log("Amount To Pay", amountToPay);
+
         if (this.state.web3 !== undefined) {
             let EscrowCreator = new this.state.web3.eth.Contract(EscrowABI.abi, {
                 data: EscrowABI.bytecode,
@@ -56,7 +61,7 @@ class Escrow extends React.Component {
                 arguments: [
                     this.state.createEscrow.renterAddr,
                     this.state.createEscrow.ownerAddr,
-                    this.state.createEscrow.costPerDay * WEI,
+                    costPerDay,
                     this.state.createEscrow.numberOfDays,
                     this.state.createEscrow.startTime
                 ]
@@ -65,9 +70,9 @@ class Escrow extends React.Component {
             deployedEscrow
                 .estimateGas()
                 .then(gas => deployedEscrow.send({
-                    from: config.mainAccount,
+                    from: this.state.createEscrow.renterAddr,
                     gas: (gas + 250),
-                    value: Web3.utils.toWei(sendValue.toString(), "ether")
+                    value: amountToPay,
                 }))
                 .then(newContract => {
                     console.log(newContract);
@@ -77,6 +82,21 @@ class Escrow extends React.Component {
         } else {
             console.log("Web3 not defined");
         }
+    }
+
+    handleLoadEscrow() {
+        console.log(this.state.escrowContract.address);
+        const manager = new EscrowManager(this.state.escrowContract.address);
+        manager
+            .getInfo()
+            .then(result => {
+                console.log(result);
+                console.log("Cost per day: ", convertWei(result.costPerDay));
+                console.log("Current Balance: ", convertWei(result.currentEscrowBalance));
+                console.log("Start Time: ", convertTime(result.startTime).toLocaleString("en-AU"));
+                console.log("Release Time: ", convertTime(result.releaseTime).toLocaleString("en-AU"));
+            })
+            .catch(error => console.log(error));
     }
 
     render() {
@@ -137,21 +157,26 @@ class Escrow extends React.Component {
                         <div className="row">
                             <div className="col-sm-12">
                                 <Card elevation={Elevation.THREE}>
-                                    <h4>Look Up Escrow</h4>
+                                    <h4>Load Escrow</h4>
                                     <Label text="Escrow Address">
                                         <InputGroup
                                             onChange={event => {
-                                                this.setState({ escrowContract: {address: event.target.value, ...this.state.escrowContract}});
+                                                this.setState({
+                                                    escrowContract: {
+                                                        ...this.state.escrowContract,
+                                                        address: event.target.value,
+                                                    }
+                                                });
                                             }}
-                                            value={this.state.escrowContract.address}
+                                            value={ this.state.escrowContract.address }
                                             intent="primary"
                                         />
                                     </Label>
                                     <Button
-                                        // onClick={this.handleSearchAccount.bind(this)}
+                                        onClick={this.handleLoadEscrow.bind(this)}
                                         intent="primary"
                                     >
-                                        Search
+                                        Open
                                     </Button>
                                 </Card>
                             </div>

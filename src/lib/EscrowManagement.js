@@ -36,12 +36,38 @@ class EscrowManager {
      * @returns Promise which will resolve to this object
      */
     load() {
-        return this.EscrowContract.methods.getInfo().call.then(result => {
-            console.log(result);
-        });
+        return this.EscrowContract.methods
+            .getInfo()
+            .call()
+            .then(result => {
+                const information = {
+                    renter: result[0],
+                    owner: result[1],
+                    costPerDay: result[2],
+                    startTime: result[3],
+                    daysRented: result[4],
+                    releaseTime: result[5],
+                    renterCheckedIn: result[6],
+                    ownerCheckedIn: result[7],
+                    escrowCancelled: result[8],
+                    escrowDefunct: result[9],
+                    timePeroid: result[10],
+                    currentEscrowBalance: result[11]
+                }
+                this.information = information;
+            });
     }
 
-    getInfo(account) {}
+    getInfo(){
+        if (!this.information) {
+            return this.load()
+                .then(() => {
+                    return this.information
+                })
+        } else {
+            return this.information;
+        }
+    }
 }
 
 export default EscrowManager;
