@@ -59,8 +59,8 @@ contract House {
         return ratings;
     }
 
-    function getUserRating(Account account) external view returns (Rating) {
-        return ratingsMap[account];
+    function getUserRating(address user) external view returns (Rating) {
+        return ratingsMap[user];
     }
 
     function makeBooking(Account account, uint64 start, uint8 duration) public {

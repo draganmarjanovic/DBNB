@@ -1,9 +1,9 @@
 pragma solidity ^0.4.21;
 
 contract Rating {
-    uint8 private stars;
+    uint8 private stars; // 0 <= stars <= 5
     
-    bytes32 private title;
+    bytes32 private title; //Non-empty, limited size
     string private comment;
 
     constructor(uint8 _stars, bytes32 _title, string _comment) public {
@@ -15,15 +15,15 @@ contract Rating {
         stars = _stars;
     }
 
-    function getStars() public view returns (uint8) {
+    function getStars() external view returns (uint8) {
         return stars;
     }
 
-    function getTitle() public view returns (bytes32) {
+    function getTitle() external view returns (bytes32) {
         return title;
     }
 
-    function getComment() public view returns (string) {
+    function getComment() external view returns (string) {
         return comment;
     }
 }
