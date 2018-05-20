@@ -1,6 +1,6 @@
 import React from "react";
 import Web3 from "web3";
-import { Button, InputGroup, NumericInput, Label, Card, Elevation, TextArea, Dialog, Intent, Callout } from "@blueprintjs/core";
+import { Button, AnchorButton, InputGroup, NumericInput, Label, Card, Elevation, TextArea, Dialog, Intent, Callout, Popover, Tooltip, Position } from "@blueprintjs/core";
 import { convertWei, convertTime } from "../lib/ether"
 
 import "../styles/grid.scss";
@@ -25,6 +25,14 @@ class Escrow extends React.Component {
                 startString: "",
                 maturityTime: "",
                 primary: {
+                    text: "",
+                    disabled: true,
+                    intent: undefined,
+                    onClick: () => {console.log("Default")},
+                    popOverText: "",
+                    popOverDisabled: true,
+                },
+                secondary: {
                     text: "",
                     disabled: true,
                     intent: undefined,
@@ -58,6 +66,7 @@ class Escrow extends React.Component {
     handleCreateEscrow() {
         console.log(this.state.createEscrow);
         const costPerDay = Web3.utils.toWei(this.state.createEscrow.costPerDay.toString(), "ether");
+        // FIXME: Convert costPerDay to Wei first then try
         const amountToPay = Web3.utils.toWei((this.state.createEscrow.costPerDay * this.state.createEscrow.numberOfDays).toString(), "ether");
         
         console.log("Cost Per Day", costPerDay);
@@ -135,6 +144,11 @@ class Escrow extends React.Component {
                     }
                 })
 
+                if (result.escrowDefunct) {
+                    console.log("Escrow defunct, hide buttons, show warning");
+
+                }
+
                 if (result.renter === this.state.user.accountID) {
                     // Renter
                     if (!result.renterCheckedIn) {
@@ -147,6 +161,7 @@ class Escrow extends React.Component {
                                     intent: Intent.PRIMARY,
                                     disabled: false,
                                     onClick: this.checkIn.bind(this),
+                                    popOverDisabled: true,
                                 }
                             }
                         })
@@ -157,15 +172,69 @@ class Escrow extends React.Component {
                                 ...this.state.dialog,
                                 primary: {
                                     ...this.state.dialog.primary,
-                                    text: "Check-in Complete",
+                                    text: "CHECK-IN",
                                     disabled: true,
-                                    intent: Intent.SUCCESS
+                                    intent: Intent.SUCCESS,
+                                    popOverDisabled: false,
+                                    popOverText: "You have already checked in!"
                                 }
                             }
                         })
                     }
                 } else {
                     // Owner
+                    if (!result.renterCheckedIn) {
+                        // if the renter has not checked in yet, wait for them to check in.
+                        this.setState({
+                            dialog: {
+                                ...this.state.dialog,
+                                primary: {
+                                    ...this.state.dialog.primary,
+                                    text: "Accept Check In",
+                                    intent: Intent.WARNING,
+                                    disabled: true,
+                                    popOverDisabled: false,
+                                    popOverText: "The renter has yet to check in."
+                                }
+                            }
+                        })
+                    } else {
+                        // Renter has checked in so the owner can checkin now
+                        if (!result.ownerCheckedIn) {
+                            // Has not chcecked in, so has to check in
+                            this.setState({
+                                dialog: {
+                                    ...this.state.dialog,
+                                    primary: {
+                                        ...this.state.dialog.primary,
+                                        text: "Accept Check In",
+                                        intent: Intent.PRIMARY,
+                                        disabled: false,
+                                        onClick: this.checkIn.bind(this),
+                                        popOverDisabled: true,
+                                    }
+                                }
+                            })
+                        } else {
+                            // Show claim button
+                            const hasMatured = convertTime(result.releaseTime) < Date.now()
+                            console.log("Has matrured:", hasMatured);
+                            this.setState({
+                                dialog: {
+                                    ...this.state.dialog,
+                                    primary: {
+                                        ...this.state.dialog.primary,
+                                        text: "CLAIM",
+                                        intent: Intent.SUCCESS,
+                                        disabled: !hasMatured,
+                                        popOverDisabled: hasMatured,
+                                        popOverText: hasMatured ? "Hello" : "The Escrow has not matured yet!",
+                                        onClick: () => console.log("Defaukt")
+                                    }
+                                }
+                            })
+                        }
+                    }
                 }
                 this.toggleDialog();
                 console.log(this.state.dialog)
@@ -219,23 +288,25 @@ class Escrow extends React.Component {
                     </table>
                     <div className="pt-dialog-footer">
                         <div className="pt-dialog-footer-actions">
-                            {/* <Callout
-                                intent={Intent.PRIMARY}
-                            >
-                                Hello
-                            </Callout> */}
-
                             <Button 
                                 text="CANCEL"
                                 intent={Intent.DANGER}
                                 onClick={() => console.log("Cancel Escrow")}
                             />
-                            <Button
-                                intent={ this.state.dialog.primary.intent}
-                                onClick={ this.state.dialog.primary.onClick}
-                                text={this.state.dialog.primary.text}
-                                disabled={this.state.dialog.primary.disabled}
-                            />
+                            <Popover contnet={<h1>Popover!</h1>} position={Position.BOTTOM}>
+                                <Tooltip 
+                                    content= {this.state.dialog.primary.popOverText}
+                                    position={Position.BOTTOM}
+                                    disabled={this.state.dialog.primary.popOverDisabled}>
+                                <AnchorButton
+                                    intent={ this.state.dialog.primary.intent}
+                                    onClick={ this.state.dialog.primary.onClick}
+                                    text={this.state.dialog.primary.text}
+                                    disabled={this.state.dialog.primary.disabled}
+                                />
+                                </Tooltip>
+                            </Popover>
+                            
                         </div>
                     </div>
                 </Dialog>
@@ -287,7 +358,7 @@ class Escrow extends React.Component {
                             <Button
                                 onClick={ this.handleCreateEscrow.bind(this) }
                                 intent="primary"
-                            >Add Account</Button>
+                            >Create Escrow</Button>
                         </Card>
                     </div>
 
