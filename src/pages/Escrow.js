@@ -1,6 +1,6 @@
 import React from "react";
 import Web3 from "web3";
-import { Button, InputGroup, NumericInput, Label, Card, Elevation, TextArea } from "@blueprintjs/core";
+import { Button, InputGroup, NumericInput, Label, Card, Elevation, TextArea, Dialog, Intent, Callout } from "@blueprintjs/core";
 import { convertWei, convertTime } from "../lib/ether"
 
 import "../styles/grid.scss";
@@ -17,6 +17,20 @@ class Escrow extends React.Component {
         this.state = {
             web3: undefined,
             user: this.props.account,
+            dialog: {
+                show: false,
+                costPerDay: 0,
+                currentBalance: 0,
+                daysRented: 0,
+                startString: "",
+                maturityTime: "",
+                primary: {
+                    text: "",
+                    disabled: true,
+                    intent: undefined,
+                    onClick: () => {console.log("Default")},
+                }
+            },
             createEscrow: {
                 renterAddr: this.props.account.accountID, 
                 ownerAddr: "",
@@ -28,10 +42,7 @@ class Escrow extends React.Component {
                 address: "",
                 item: "",
             },
-            loadedEscrow: {
-                manager: undefined,
-                
-            }
+            manager: undefined,
         };
     }
 
@@ -86,24 +97,149 @@ class Escrow extends React.Component {
         }
     }
 
-    handleLoadEscrow() {
-        console.log(this.state.escrowContract.address);
+    toggleDialog() {
+        this.setState({ dialog: {...this.state.dialog, show: !this.state.dialog.show} });
+    }
+
+    checkIn() {
+        const contract = this.state.manager;
+        contract
+            .checkIn(this.state.user.accountID)
+            .then(result => console.log(result))
+            .then(() => this.updateState())
+    }
+
+    updateState() {
+        console.log(this.state);
         const manager = new EscrowManager(this.state.escrowContract.address);
         manager
             .getInfo()
             .then(result => {
                 console.log(result);
-                console.log("Cost per day: ", convertWei(result.costPerDay));
-                console.log("Current Balance: ", convertWei(result.currentEscrowBalance));
-                console.log("Start Time: ", convertTime(result.startTime).toLocaleString("en-AU"));
-                console.log("Release Time: ", convertTime(result.releaseTime).toLocaleString("en-AU"));
+                const costPerDay = convertWei(result.costPerDay);
+                const startString = convertTime(result.startTime).toLocaleString("en-AU");
+                const currentBalance = convertWei(result.currentEscrowBalance);
+                const maturityTime = convertTime(result.releaseTime).toLocaleString("en-AU");
+                console.log("Cost per day: ", costPerDay);
+                console.log("Current Balance: ", currentBalance);
+                console.log("Start Time: ", startString);
+                console.log("Release Time: ", maturityTime);
+                this.setState({
+                    dialog: {
+                        ...this.state.dialog,
+                        costPerDay,
+                        currentBalance,
+                        startString,
+                        maturityTime,
+                        daysRented: result.daysRented,
+                    }
+                })
+
+                if (result.renter === this.state.user.accountID) {
+                    // Renter
+                    if (!result.renterCheckedIn) {
+                        this.setState({
+                            dialog: {
+                                ...this.state.dialog,
+                                primary: {
+                                    ...this.state.dialog.primary,
+                                    text: "CHECK-IN",
+                                    intent: Intent.PRIMARY,
+                                    disabled: false,
+                                    onClick: this.checkIn.bind(this),
+                                }
+                            }
+                        })
+                    } else {
+                        // They have already checked in
+                        this.setState({
+                            dialog: {
+                                ...this.state.dialog,
+                                primary: {
+                                    ...this.state.dialog.primary,
+                                    text: "Check-in Complete",
+                                    disabled: true,
+                                    intent: Intent.SUCCESS
+                                }
+                            }
+                        })
+                    }
+                } else {
+                    // Owner
+                }
+                this.toggleDialog();
+                console.log(this.state.dialog)
             })
             .catch(error => console.log(error));
+    }
+
+    handleLoadEscrow() {
+        console.log(this.state.escrowContract.address);
+        const manager = new EscrowManager(this.state.escrowContract.address);
+        this.setState({
+            ...this.state,
+            manager
+        }, this.updateState)
     }
 
     render() {
         return (
             <div>
+                <Dialog
+                    icon="projects"
+                    isOpen={this.state.dialog.show}
+                    onClose={this.toggleDialog.bind(this)}
+                    title="Booking <Listing Address>"
+                >
+                    <table class="pt-html-table .modifier">
+                        <thead>
+                            <tr>
+                                 <th>Start Time</th>
+                                 <th>{ this.state.dialog.startString }</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Number of Days:</td>
+                                <td>{this.state.dialog.daysRented} </td>
+                            </tr>
+                            <tr>
+                                <td>Cost per Night:</td>
+                                <td>{this.state.dialog.costPerDay} </td>
+                            </tr>
+                            <tr>
+                                <td>Balance:</td>
+                                <td>{this.state.dialog.currentBalance}</td>
+                            </tr>
+                            <tr>
+                              <td>Maturity Time: </td>
+                              <td>{this.state.dialog.maturityTime}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div className="pt-dialog-footer">
+                        <div className="pt-dialog-footer-actions">
+                            {/* <Callout
+                                intent={Intent.PRIMARY}
+                            >
+                                Hello
+                            </Callout> */}
+
+                            <Button 
+                                text="CANCEL"
+                                intent={Intent.DANGER}
+                                onClick={() => console.log("Cancel Escrow")}
+                            />
+                            <Button
+                                intent={ this.state.dialog.primary.intent}
+                                onClick={ this.state.dialog.primary.onClick}
+                                text={this.state.dialog.primary.text}
+                                disabled={this.state.dialog.primary.disabled}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
+
                 <div className="row homeRow">
                     <div className="col-sm-12 col-md-6">
                         <Card elevation={ Elevation.THREE }>

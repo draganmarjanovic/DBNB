@@ -31,6 +31,26 @@ class EscrowManager {
             });
     }
 
+    checkIn(address) {
+        console.log("Checkin attempt")
+        const checkInFunc = this.EscrowContract.methods.checkIn();
+        return checkInFunc
+            .estimateGas()
+            .then(gas => {
+                return checkInFunc.send({
+                    from: address,
+                    gas: gas + 150
+                })
+            })
+            .then(result => {
+                console.log("Checkin Results", result);
+                if (result !== {}) {
+                    return true;
+                }
+                return false;
+            })
+    }
+
     /**
      * Loads all the data of the escrow from the blockchain
      * @returns Promise which will resolve to this object

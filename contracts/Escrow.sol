@@ -69,7 +69,7 @@ contract DBNBEscrow {
 
     // This function checks in users to indicate that the 
     function checkIn() external onlyInvolved {
-        require(_startTime - 6 hours < block.timestamp, "It's too early to check in. Try again closer to the time of the booking");
+        // require(_startTime - 6 hours < block.timestamp, "It's too early to check in. Try again closer to the time of the booking");
         if (msg.sender == _owner) {
             // Owner sent the tx call
             require(_renterCheckedIn, "The renter has not checked in yet");
