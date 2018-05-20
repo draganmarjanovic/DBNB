@@ -13,7 +13,9 @@ contract House {
     }
 
     mapping(uint64 => Booking) public dayToBooking;
-    mapping(address => Rating) public ratings;
+
+    Rating[] private ratings;
+    mapping(address => Rating) private ratingsMap;
 
     address private _homeOwner;
 
@@ -46,10 +48,28 @@ contract House {
         return _price;
     }
 
+    function makeRating(Account account, uint8 stars, bytes32 title, string comment) public {
+        //require(account.getOwner() == msg.sender);
+        //require(ratingsMap[msg.sender] == address(0));
+
+        Rating rating = new Rating(stars, title, comment);
+        ratingsMap[msg.sender] = rating;
+        ratings.push(rating);
+    }
+
     function addRating(Rating rating) external {
         //TODO: require on user stayed at house
-        require(ratings[msg.sender] == address(0), "Rating already exists");
-        ratings[msg.sender] = rating;
+        require(ratingsMap[msg.sender] == address(0), "Rating already exists");
+        ratingsMap[msg.sender] = rating;
+        ratings.push(rating);
+    }
+
+    function getRatings() external view returns (Rating[]) {
+        return ratings;
+    }
+
+    function getUserRating(address user) external view returns (Rating) {
+        return ratingsMap[user];
     }
 
     function makeBooking(Account account, uint64 start, uint8 duration) public {

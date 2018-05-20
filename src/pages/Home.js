@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Elevation, ButtonGroup, Button, Overlay, InputGroup, Label, Popover, Position } from "@blueprintjs/core";
+import { Card, Elevation, ButtonGroup, Button, Overlay, InputGroup, Label, Popover, Position, Slider, TextArea, Callout } from "@blueprintjs/core";
 import DayPicker from "react-day-picker";
 import "../../node_modules/react-day-picker/lib/style.css";
 
@@ -20,7 +20,9 @@ class Home extends React.Component {
             bookingAccount: undefined,
             makeNewBooking: undefined,
             makeNewBookingSelected: undefined,
-            makeNewBookingSelectedPicker: undefined
+            makeNewBookingSelectedPicker: undefined,
+            makeReview: undefined,
+            makeReviewVals: undefined
         };
     }
 
@@ -111,6 +113,28 @@ class Home extends React.Component {
         // });
     }
 
+    handleAddReview() {
+        let rating = this.state.makeReviewVals.rating;
+        let title = this.state.makeReviewVals.title;
+        let comment = this.state.makeReviewVals.comment;
+        let accountAddr = this.state.makeReviewVals.accAddr;
+        let house = this.state.makeReview;
+
+        AccountManagement.getAccount(accountAddr).then((account) => {
+            if (account === undefined) {
+                throw new Error("Account Doesn't exist");
+            }
+            return house.makeRating(account, rating, title, comment);
+        }).then((result) => {
+            if (result) {
+                console.log("Success");
+            }
+            console.log("Failed");
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+
     componentDidMount() {
         this.fetchHouses();
     }
@@ -140,6 +164,12 @@ class Home extends React.Component {
                                     }}
                                     intent="primary"
                                 >Make a Booking</Button>
+                                <Button
+                                    onClick={() => {
+                                        this.setState({ makeReview: house, makeReviewVals: {} });
+                                    }}
+                                    intent="primary"
+                                >Reviews</Button>
                             </ButtonGroup>
                         </Card>
                     </div>
@@ -246,6 +276,71 @@ class Home extends React.Component {
                                     </div>
                                 </Popover>
                             </div>
+                        }
+
+                    </Card>
+                </Overlay>
+
+                <Overlay isOpen={ this.state.makeReview !== undefined } onClose={() => {
+                    this.setState({ makeReview: undefined, makeReviewVals: undefined });
+                }}>
+                    <Card elevation={ Elevation.THREE } style={{ top: "50%", left: "50%", transform: "perspective(1px) translateY(-50%) translateX(-50%)", minWidth: "50%" }}>
+                        <h4>Reviews</h4>
+
+                        { this.state.makeReview !== undefined && this.state.makeReview.getRatings().map((rating, i) => {
+                            return (
+                                <Callout key={i}>
+                                    <div>
+                                        <h6 style={{ margin: 0 }}>{ rating.getTitle() }</h6>
+                                        <div style={{ fontSize: "0.8rem" }}>Rating: { rating.getStars() }</div>
+                                    </div>
+                                    <div style={{ paddingTop: "0.2rem", paddingLeft: "1rem"}}>
+                                        { rating.getComment() }
+                                    </div>
+                                </Callout>
+                            );
+                        })}
+
+                        {this.state.makeReviewVals !== undefined &&
+                        <div>
+                            <br /><br />
+                            <h4>Write Review</h4>
+                            <Label text="Account Address">
+                                <InputGroup onChange={(event) => {
+                                    this.setState({ makeReviewVals: {...this.state.makeReviewVals, accAddr: event.target.value} });
+                                }}
+                                intent="primary"/>
+                            </Label>
+                            <Slider initialValue={ 0 } labelPrecision={ 0 } labelStepSize={ 1 } max={ 5 } min={ 0 } stepSize={ 1 }
+                                onChange={(value) => {
+                                    this.setState({ makeReviewVals: {...this.state.makeReviewVals, rating: value} });
+                                }}
+                                value={ this.state.makeReviewVals.rating } />
+
+                            <Label text="Title">
+                                <InputGroup
+                                    onChange={(event) => {
+                                        this.setState({ makeReviewVals: {...this.state.makeReviewVals, title: event.target.value} });
+                                    }}
+                                    intent="primary"
+                                />
+                            </Label>
+
+                            <Label text="Comment">
+                                <TextArea large={ false }
+                                    onChange={(event) => {
+                                        this.setState({ makeReviewVals: {...this.state.makeReviewVals, comment: event.target.value} });
+                                    }}
+                                    value={ this.state.makeReviewVals.comment }
+                                    intent="primary"
+                                    style={{ width: "100%" }}
+                                    rows={ 5 }/>
+                            </Label>
+                            <Button
+                                onClick={ this.handleAddReview.bind(this) }
+                                intent="primary"
+                            >Add Review</Button>
+                        </div>
                         }
 
                     </Card>

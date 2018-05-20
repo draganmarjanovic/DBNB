@@ -31,7 +31,13 @@ contract Account {
 
     AccountBooking[] private _bookings;
 
-    mapping(address => Rating) private rated;
+    // houses to rating mapping
+    Rating[] private rated;
+    mapping(address => Rating) private ratedMap;
+
+    // Host to rating mapping
+    Rating[] private userReviews;
+    mapping(address => Rating) private userReviewsMap;
 
     address private accountOwner;
 
@@ -66,12 +72,32 @@ contract Account {
 
     function rateHouse(House house, uint8 _stars, bytes32 _title, string _comment) external {
         require(msg.sender == accountOwner);
-        require(rated[address(house)] == address(0), "You have already rated this house");
+        require(ratedMap[address(house)] == address(0), "You have already rated this house");
         //TODO: require on user stayed at house
 
         Rating rating = new Rating(_stars, _title, _comment);
-        rated[address(house)] = rating;
+        ratedMap[address(house)] = rating;
+        rated.push(rating);
         house.addRating(rating);
+    }
+
+    function leaveReview(uint8 _stars, bytes32 _title, string _comment) public {
+        require(msg.sender != accountOwner, "Cannot review yourself");
+        require(userReviewsMap[msg.sender] == address(0), "Already reviewed this user");
+
+        //TODO: check that user has stayed at house
+
+        Rating review = new Rating(_stars, _title, _comment);
+        userReviewsMap[msg.sender] = review;
+        userReviews.push(review);
+    }
+
+    function getReviews() view external returns (Rating[]) {
+        return userReviews;
+    }
+
+    function getUserReview(address a) view external returns (Rating) {
+        return userReviewsMap[a];
     }
 
     function confirmBooking(House house, uint64 start, uint8 duration) public {
