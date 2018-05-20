@@ -55,12 +55,19 @@ export class Page extends React.Component {
         this.setState({ loading: true });
         AccountManager.addAccount(this.state.accountAddr, this.state.accountName, this.state.accountEmail).then((result) => {
             this.setState({ loading: false });
-            if (result) {
-                successToast("Account Created");
+            if (!result) {
+                errorToast("Error creating account");
             }
-            return AccountManager.getAccount(this.state.accountAddr);
-        }).then((account) => {
-            this.setState({ account });
+            console.log("Here");
+            setTimeout(() => {
+                AccountManager.getAccount(this.state.accountAddr).then((account) => {
+                    successToast("Account Created");
+                    this.setState({ account });
+                }).catch((error) => {
+                    errorToast("Error loading account");
+                    console.error(error);
+                });
+            }, 1000);
         }).catch((error) => {
             errorToast("Error while adding account");
             console.error(error);
