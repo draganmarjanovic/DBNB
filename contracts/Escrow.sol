@@ -1,54 +1,49 @@
 pragma solidity ^0.4.21;
 
-contract Escrow {
 
-    bool private _ownerAgreed;
-    bool private _renterAgreed;
-    uint64 private _duration;
+contract DBNBEscrow {
     address private _renter;
     address private _owner;
-    uint16 private _pricePerDay;
-    uint16 private _start;
+    uint256 private _costPerDay;
+    
 
-    uint16 private sentAmount;
- 
-    // SHould it be address of homeOwner or House contract ? 
-    constructor(uint16 start, uint16 end, uint16 pricePerDay, uint16 totalPrice, address renter, address homeOwner ) public {
-        _duration = (end - start); // compute how many days the renter is staying
+    // Actions
+    uint8 public constant RELEASE_FUNDS = 0x01;
 
-        // totalPrice is for whole duration
-        require(address(this).balance >= (pricePerDay * _duration));
+    // Events
+    event Created(address renter, address owner, uint256 balance);
+    event PaidOwner(address owner, uint256 amountPaid);
+    event BalanceLeft(uint256 balance);
 
-        _ownerAgreed = false;
-        _renterAgreed = false;
-        _owner = homeOwner;
+    // Ensure only the renter or the owner is able to interact with the contract
+    modifier onlyOwner() {
+        require(msg.sender == _owner);
+        _; // Calls the function the owner called
+    }
+
+    modifier onlyRenter() {
+        require(msg.sender == _renter);
+        _;
+    }
+
+    function releaseEscrow() external onlyOwner {
+        _owner.transfer(_costPerDay);
+        emit PaidOwner(_owner, _costPerDay);
+        emit BalanceLeft(address(this).balance);
+    }
+
+    // Constructor
+    function DBNBEscrow (
+        address renter, 
+        address owner, 
+        uint256 costPerDay, 
+        uint256 numberOfDays
+        ) public payable 
+    {
+        require(address(this).balance >= costPerDay * numberOfDays);
         _renter = renter;
-        _start = start;
-        _pricePerDay = pricePerDay;
-    }
-
-    function sign() public {
-        if(msg.sender == _renter) {
-            _renterAgreed = true;
-        }
-        if(msg.sender == _owner) {
-            _ownerAgreed = true;
-        }
-    }
-
-    function release_funds() public {
-        uint256 daysGone = (now / (1 days)) - _start;
-        uint256 total = daysGone * _pricePerDay;
-        uint256 toPay = total - sentAmount;
-        sentAmount += uint16(toPay);
-        _owner.send(toPay);
-    }
-
-    function cancel_escrow() public {
-        // Set penalty of 1 day
-
-        // compute how many remaning days there are
-
-        // then return the (remaining days - 1) * paymentPerDay
+        _owner = owner;
+        _costPerDay = costPerDay;
+        emit Created(_renter, _owner, 5);
     }
 }
