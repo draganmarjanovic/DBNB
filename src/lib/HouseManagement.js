@@ -35,7 +35,7 @@ class HouseManager {
         return addHouse.estimateGas().then((result) => {
             return addHouse.send({
                 from: account.getAccountID(),
-                gas: (result + 150)
+                gas: 6550000
             });
         }).then((result) => {
             if (result !== {}) {

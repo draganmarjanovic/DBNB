@@ -116,23 +116,32 @@ class Escrow extends React.Component {
             .checkIn(this.state.user.accountID)
             .then(result => console.log(result))
             .then(() => this.updateState())
+            .catch(error => console.error(error))
+    }
+
+    releaseEscrow() {
+        const contract = this.state.manager;
+        contract
+            .releaseEscrow(this.state.user.accountID)
+            .then(result => console.log(result))
+            .then(result => {
+                successToast("Escrow has been released succesfully");
+            })
+            .then(() => this.updateState())
+            .catch(error => console.error(error))
     }
 
     updateState() {
-        console.log(this.state);
+
         const manager = new EscrowManager(this.state.escrowContract.address);
         manager
             .getInfo()
             .then(result => {
-                console.log(result);
                 const costPerDay = convertWei(result.costPerDay);
                 const startString = convertTime(result.startTime).toLocaleString("en-AU");
                 const currentBalance = convertWei(result.currentEscrowBalance);
                 const maturityTime = convertTime(result.releaseTime).toLocaleString("en-AU");
-                console.log("Cost per day: ", costPerDay);
-                console.log("Current Balance: ", currentBalance);
-                console.log("Start Time: ", startString);
-                console.log("Release Time: ", maturityTime);
+
                 this.setState({
                     dialog: {
                         ...this.state.dialog,
@@ -146,96 +155,117 @@ class Escrow extends React.Component {
 
                 if (result.escrowDefunct) {
                     console.log("Escrow defunct, hide buttons, show warning");
-
-                }
-
-                if (result.renter === this.state.user.accountID) {
-                    // Renter
-                    if (!result.renterCheckedIn) {
-                        this.setState({
-                            dialog: {
-                                ...this.state.dialog,
-                                primary: {
-                                    ...this.state.dialog.primary,
-                                    text: "CHECK-IN",
-                                    intent: Intent.PRIMARY,
-                                    disabled: false,
-                                    onClick: this.checkIn.bind(this),
-                                    popOverDisabled: true,
-                                }
+                    this.setState({
+                        dialog: {
+                            ...this.state.dialog,
+                            primary: {
+                                ...this.state.dialog.primary,
+                                text: "CLAIMED",
+                                disabled: true,
+                                intent: Intent.SUCCESS,
+                                popOverDisabled: false,
+                                popOverText: "The Escrow has been defunct and is now closed."
                             }
-                        })
-                    } else {
-                        // They have already checked in
-                        this.setState({
-                            dialog: {
-                                ...this.state.dialog,
-                                primary: {
-                                    ...this.state.dialog.primary,
-                                    text: "CHECK-IN",
-                                    disabled: true,
-                                    intent: Intent.SUCCESS,
-                                    popOverDisabled: false,
-                                    popOverText: "You have already checked in!"
-                                }
-                            }
-                        })
-                    }
+                        }
+                    })
                 } else {
-                    // Owner
-                    if (!result.renterCheckedIn) {
-                        // if the renter has not checked in yet, wait for them to check in.
-                        this.setState({
-                            dialog: {
-                                ...this.state.dialog,
-                                primary: {
-                                    ...this.state.dialog.primary,
-                                    text: "Accept Check In",
-                                    intent: Intent.WARNING,
-                                    disabled: true,
-                                    popOverDisabled: false,
-                                    popOverText: "The renter has yet to check in."
+                    if (result.renter === this.state.user.accountID) {
+                        // Renter
+                        if (!result.renterCheckedIn) {
+                            this.setState({
+                                dialog: {
+                                    ...this.state.dialog,
+                                    primary: {
+                                        ...this.state.dialog.primary,
+                                        text: "CHECK-IN",
+                                        intent: Intent.PRIMARY,
+                                        disabled: false,
+                                        onClick: this.checkIn.bind(this),
+                                        popOverDisabled: true
+                                    }
                                 }
-                            }
-                        })
+                            });
+                        } else {
+                            // They have already checked in
+                            this.setState({
+                                dialog: {
+                                    ...this.state.dialog,
+                                    primary: {
+                                        ...this.state.dialog.primary,
+                                        text: "CHECK-IN",
+                                        disabled: true,
+                                        intent: Intent.SUCCESS,
+                                        popOverDisabled: false,
+                                        popOverText:
+                                            "You have already checked in!"
+                                    }
+                                }
+                            });
+                        }
                     } else {
-                        // Renter has checked in so the owner can checkin now
-                        if (!result.ownerCheckedIn) {
-                            // Has not chcecked in, so has to check in
+                        // Owner
+                        if (!result.renterCheckedIn) {
+                            // if the renter has not checked in yet, wait for them to check in.
                             this.setState({
                                 dialog: {
                                     ...this.state.dialog,
                                     primary: {
                                         ...this.state.dialog.primary,
                                         text: "Accept Check In",
-                                        intent: Intent.PRIMARY,
-                                        disabled: false,
-                                        onClick: this.checkIn.bind(this),
-                                        popOverDisabled: true,
+                                        intent: Intent.WARNING,
+                                        disabled: true,
+                                        popOverDisabled: false,
+                                        popOverText:
+                                            "The renter has yet to check in."
                                     }
                                 }
-                            })
+                            });
                         } else {
-                            // Show claim button
-                            const hasMatured = convertTime(result.releaseTime) < Date.now()
-                            console.log("Has matrured:", hasMatured);
-                            this.setState({
-                                dialog: {
-                                    ...this.state.dialog,
-                                    primary: {
-                                        ...this.state.dialog.primary,
-                                        text: "CLAIM",
-                                        intent: Intent.SUCCESS,
-                                        disabled: !hasMatured,
-                                        popOverDisabled: hasMatured,
-                                        popOverText: hasMatured ? "Hello" : "The Escrow has not matured yet!",
-                                        onClick: () => console.log("Defaukt")
+                            // Renter has checked in so the owner can checkin now
+                            if (!result.ownerCheckedIn) {
+                                // Has not chcecked in, so has to check in
+                                this.setState({
+                                    dialog: {
+                                        ...this.state.dialog,
+                                        primary: {
+                                            ...this.state.dialog.primary,
+                                            text: "Accept Check In",
+                                            intent: Intent.PRIMARY,
+                                            disabled: false,
+                                            onClick: this.checkIn.bind(this),
+                                            popOverDisabled: true
+                                        }
                                     }
-                                }
-                            })
+                                });
+                            } else {
+                                // Show claim button
+                                const hasMatured =
+                                    convertTime(result.releaseTime) <
+                                    Date.now();
+                                console.log("Has matrured:", hasMatured);
+                                this.setState({
+                                    dialog: {
+                                        ...this.state.dialog,
+                                        primary: {
+                                            ...this.state.dialog.primary,
+                                            text: "CLAIM",
+                                            intent: Intent.SUCCESS,
+                                            disabled: !hasMatured,
+                                            popOverDisabled: hasMatured,
+                                            popOverText: hasMatured
+                                                ? "Hello"
+                                                : "The Escrow has not matured yet!",
+                                            onClick: this.releaseEscrow.bind(
+                                                this
+                                            )
+                                        }
+                                    }
+                                });
+                            }
                         }
                     }
                 }
+                
                 this.toggleDialog();
                 console.log(this.state.dialog)
             })
@@ -248,7 +278,9 @@ class Escrow extends React.Component {
         this.setState({
             ...this.state,
             manager
-        }, this.updateState)
+        }, () => {
+            this.updateState();
+        })
     }
 
     render() {

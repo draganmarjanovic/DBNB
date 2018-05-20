@@ -15,12 +15,12 @@ class EscrowManager {
 
     releaseEscrow(account) {
         const releaseFunc = this.EscrowContract.methods.releaseEscrow();
-        return releaseFunc
-            .estimateGas()
+        // FIXME: Gas Estimations broken
+        return Promise.resolve()
             .then(result => {
                 return releaseFunc.send({
-                    from: account.getAccountID(),
-                    gas: result + 150
+                    from: account,
+                    gas: 65000
                 });
             })
             .then(result => {
