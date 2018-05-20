@@ -142,4 +142,12 @@ contract DBNBEscrow {
         // Escrow is now cancelled and is defuncted
         _escrowDefunct = true;
     }
+
+    // Some functions for interfacing with Web3
+    function getInfo() external view returns(address, address, uint256, uint256, uint8, uint256, bool, bool, bool, bool, uint256) {
+        return (_renter, _owner, 
+            _costPerDay, _startTime, _numberOfDays, _releaseTime,
+            _renterCheckedIn, _ownerCheckedIn, _escrowCancelled, _escrowDefunct,
+            TIME_DENOMINATION);
+    }
 }
