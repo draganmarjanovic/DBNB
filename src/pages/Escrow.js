@@ -12,11 +12,13 @@ import { successToast, errorToast } from "../lib/Toaster"
 
 class Escrow extends React.Component {
     constructor(props) {
+        console.log(props);
         super(props);
         this.state = {
             web3: undefined,
+            user: this.props.account,
             createEscrow: {
-                renterAddr: "", 
+                renterAddr: this.props.account.accountID, 
                 ownerAddr: "",
                 costPerDay: 0.1,
                 numberOfDays: 1,

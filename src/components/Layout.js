@@ -86,7 +86,7 @@ export class Page extends React.Component {
                                 <Tabs.Expander />
                                 <Tab id="home" title="Home" panel={<Home account={ this.state.account }/>} />
                                 <Tab id="profile" title="Listing" panel={<Profile account={ this.state.account } />} />
-                                <Tab id="escrow" title="Escrow" panel={<Escrow />} />
+                                <Tab id="escrow" title="Escrow" panel={<Escrow account={ this.state.account } />} />
                                 <Tab id="account" title="Account" panel={<Account account={ this.state.account }/>} />
                                 <Tab id="deploy" title="Deploy" panel={<Deploy account={ this.state.account } />} />
                             </Tabs>
