@@ -23,10 +23,12 @@ class AccountManager {
      */
     addAccount(accountAddr, name, email) {
         let addAccountFunc = this.AccountManagerContract.methods.addAccount(name, email);
-        return addAccountFunc.estimateGas().then((result) => {
+        // FIXME: The estimate gas function fails when there is already an account registered.
+        return Promise.resolve()
+            .then((result) => {
             return addAccountFunc.send({
                 from: accountAddr,
-                gas: (result + 150)
+                gas: (6654755)
             });
         }).then((result) => {
             if (result !== {}) {
