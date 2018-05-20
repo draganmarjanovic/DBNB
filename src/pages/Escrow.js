@@ -24,7 +24,7 @@ class Escrow extends React.Component {
                 startTime: Math.floor(Date.now() / 1000),
             },
             escrowContract: {
-                address: undefined,
+                address: "",
             }
         };
     }

@@ -55,9 +55,9 @@ contract DBNBEscrow {
         uint256 startTime
         ) public payable 
     {
-        require(address(this).balance >= costPerDay * numberOfDays, "The balance of the escrow is lower than the cost.");
+        // require(address(this).balance >= costPerDay * numberOfDays, "The balance of the escrow is lower than the cost.");
         require(startTime < (block.timestamp + 4 weeks), "This escrow contract will not support escrows more than 1 month into the future");
-        // require(block.timestamp < startTime, "Cannot create an escrow for a start time that is already past.");
+        
         _renter = renter;
         _owner = owner;
         _costPerDay = costPerDay;
