@@ -16,8 +16,6 @@
     "drizzle-react-components": "^1.1.0",
     "eth-block-tracker-es5": "^2.3.2",
     "gh-pages": "^1.1.0",
-    "ipfs": "^0.28.2",
-    "ipfs-api": "^21.0.0",
     "node-sass": "^4.9.0",
     "react": "^16.3.2",
     "react-day-picker": "^7.1.9",

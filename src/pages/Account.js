@@ -1,13 +1,8 @@
 import React from "react";
-import { Card, Elevation, InputGroup, Label, Button, Tag, Intent, Dialog, FileInput } from "@blueprintjs/core";
+import { Card, Elevation, InputGroup, Label, Button, Tag, Intent, Dialog } from "@blueprintjs/core";
 
 import AccountManager from "../lib/AccountManagement";
-import IpfsUtils from "../lib/IpfsUtils";
-
 import { successToast, errorToast } from "../lib/Toaster";
-
-import ProfilePicture from "../components/ProfilePicture";
-
 
 class Account extends React.Component {
     constructor(props) {
@@ -32,20 +27,7 @@ class Account extends React.Component {
         });
     }
 
-    updateImage(file) {
-        let reader = new window.FileReader()
-        reader.onloadend = () => {
-            let imgLocaiton = IpfsUtils.publish(reader.result)
-            console.log("updateImageLoc: " + imgLocaiton)
-            this.state.searchAccount.setImageLocation(imgLocaiton)
-        }
-    }
-
     handleUpdateAccount() {
-
-        // Upload the file to IPFS
-        this.updateImage(this.state.editAccount.imageFile);
-
         this.state.searchAccount.setName(this.state.editAccount.name).then((result) => {
             return this.state.searchAccount.setEmail(this.state.editAccount.email);
         }).then((result) => {
@@ -62,7 +44,6 @@ class Account extends React.Component {
             this.setState({ accountListings: results });
         }).catch(console.error);
     }
-
 
     render() {
 
@@ -103,7 +84,7 @@ class Account extends React.Component {
                     this.setState({ editAccount: undefined });
                 }}
                 title="Edit Account Information"
-         >
+            >
                 <div className="pt-dialog-body">
                     { this.state.editAccount !== undefined &&
                         <div>
@@ -128,12 +109,6 @@ class Account extends React.Component {
                                     onChange={(event) => {
                                         this.setState({ editAccount: {...this.state.editAccount, email: event.target.value} });
                                     }}/>
-                            </Label>
-                            <Label text="Profile Picture">
-                                <FileInput text="Choose file..." 
-                                        onChange={(event) => {
-                                            this.setState({editAccount: {...this.state.editAccount, imageFile: event.target.files[0]}});
-                                        }}/>
                             </Label>
                         </div>
                     }
@@ -187,8 +162,6 @@ class Account extends React.Component {
                                             }}>Edit</Tag>
                                         </div>
                                         <br /><br />
-                                        <ProfilePicture source={ "http://localhost:8080/ipfs/" +  this.state.searchAccount.getImageLocation() }/>
-                                        <p> Hash: { this.state.searchAccount.getImageLocation() } </p>
                                         <p>Name: { this.state.searchAccount.getName() }</p>
                                         <p>Email: { this.state.searchAccount.getEmail() }</p>
                                         <h6>Bookings</h6>
