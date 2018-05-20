@@ -93,15 +93,15 @@ class Home extends React.Component {
             console.error(error);
         });
 
-        BookingManagement.addBooking(house, account, start, duration).then((result) => {
-            if (result) {
-                console.log("Booking Made");
-            } else {
-                console.log("Failed");
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
+        // BookingManagement.addBooking(house, this.props.account, start, duration).then((result) => {
+        //     if (result) {
+        //         console.log("Booking Made");
+        //     } else {
+        //         console.log("Failed");
+        //     }
+        // }).catch((error) => {
+        //     console.error(error);
+        // });
     }
 
     handleAddReview() {
