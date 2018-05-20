@@ -4,8 +4,7 @@ import { Button, InputGroup, Label, Card, Elevation, TextArea } from "@blueprint
 
 import "../styles/grid.scss";
 
-import config from "../config";
-import HouseManagerABI from "../contracts/HouseManagement.json";
+import HouseManager from "../lib/HouseManagement";
 import { successToast, errorToast } from "../lib/Toaster"
 
 class Profile extends React.Component {
@@ -18,7 +17,6 @@ class Profile extends React.Component {
                 loading: false,
             },
             addListing: {
-                addr: "",
                 title: "",
                 desc: "",
                 cost: ""
@@ -26,59 +24,30 @@ class Profile extends React.Component {
         };
     }
 
-    componentDidMount() {
-        let web3 = new Web3(config.addr);
-        this.setState({ web3 });
-    }
-
     handleAddListing() {
-        console.info("Button Clicked, Booking is being made...")
         this.setState ( {
             listingButton: {
                 loading: true
             }
-        })
+        });
 
-        if (this.state.web3 !== undefined) {
-            let HouseManager = new this.state.web3.eth.Contract(HouseManagerABI.abi, config.HouseManagerAddr);
-
-            let addHouse = HouseManager.methods.addHouse(this.state.addListing.title, this.state.addListing.desc, this.state.addListing.cost);
-            addHouse
-                .estimateGas()
-                .then((result) => {
-                    return addHouse.send({
-                        from: this.state.addListing.addr,
-                        gas: (result + 150)
-                    });
-            }).then((result) => {
-                if (result !== {}) {
-                    // The transaction was successful
-                    successToast( this.state.addListing.title + " was listed successfully!")
-                    this.setState({
-                        addListing: {
-                            addr: "",
-                            title: "",
-                            desc: "",
-                            cost: ""
-                        },
-                        listingButton: {
-                            loading: false,
-                        }
-                    })
-                    console.info("Transaction Successful!")
-                }
-            }).catch((error) => {
-                errorToast( this.state.addListing.title + ' was not listed successfully.')
-                this.setState({
-                    listingButton: {
-                        loading: false,
-                    }
-                })
-                console.error(error);
+        HouseManager.addHouse(this.props.account, this.state.addListing.title, this.state.addListing.desc, this.state.addListing.cost).then((result) => {
+            successToast( this.state.addListing.title + " was listed successfully!");
+            this.setState({
+                addListing: {
+                    title: "",
+                    desc: "",
+                    cost: ""
+                },
+                listingButton: { loading: false }
             });
-        } else {
-            console.error("Web3 uninitalized")
-        }
+        }).catch((error) => {
+            errorToast(this.state.addListing.title + " Was not listed successfully.");
+            this.setState({
+                listingButton: { loading: false }
+            });
+            console.error(error);
+        });
     }
 
     render() {
@@ -87,14 +56,6 @@ class Profile extends React.Component {
                 <div className="col-sm-12 col-md-6">
                     <Card elevation={ Elevation.THREE }>
                         <h4>Add Listing</h4>
-                        <Label text="Account Address">
-                            <InputGroup
-                                onChange={(event) => {
-                                    this.setState({ addListing: {...this.state.addListing, addr: event.target.value} });
-                                }}
-                                value={ this.state.addListing.addr }
-                                intent="primary"/>
-                        </Label>
                         <Label text="Listing Title">
                             <InputGroup
                                 onChange={(event) => {

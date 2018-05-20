@@ -29,6 +29,21 @@ class HouseManager {
             return Promise.all(houseList);
         });
     }
+
+    addHouse(account, title, desc, price) {
+        let addHouse = this.HouseManagerContract.methods.addHouse(title, desc, price);
+        return addHouse.estimateGas().then((result) => {
+            return addHouse.send({
+                from: account.getAccountID(),
+                gas: (result + 150)
+            });
+        }).then((result) => {
+            if (result !== {}) {
+                return true;
+            }
+            return false;
+        });
+    }
 }
 
 class House {
@@ -39,13 +54,13 @@ class House {
     constructor(contractAddr) {
         this.contractAddr = contractAddr;
         this.HouseContract = new web3.eth.Contract(HouseABI.abi, contractAddr);
-        this.HouseContract.events.LogDebug((err, data) => {
-            if (err) {
-                console.error(err);
-            } else {
-                console.log(data);
-            }
-        });
+        // this.HouseContract.events.LogDebug((err, data) => {
+        //     if (err) {
+        //         console.error(err);
+        //     } else {
+        //         console.log(data);
+        //     }
+        // });
     }
 
     /**

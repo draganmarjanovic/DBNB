@@ -1,6 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Tabs, Tab } from "@blueprintjs/core";
+import { Tabs, Tab, Card, Elevation, Label, InputGroup, Button } from "@blueprintjs/core";
+import { successToast, errorToast, warningToast } from "../lib/Toaster";
+import Web3 from "web3";
+import config from "../config";
+
+import AccountManager from "../lib/AccountManagement";
 
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
@@ -11,20 +16,113 @@ import "../styles/grid.scss";
 import "../styles/components/layout.scss";
 
 export class Page extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            accountAddr: undefined,
+            account: undefined,
+            customAddr: false,
+            loading: false
+        }
+    }
+
+    componentDidMount() {
+        let web3 = new Web3(config.addr);
+        let accountAddr = undefined;
+        web3.eth.getAccounts().then((accounts) => {
+            if (accounts.length < 1) {
+                this.setState({ customAddr: true });
+                return -1;
+            }
+            accountAddr = accounts[0];
+            return AccountManager.getAccount(accounts[0]);
+        }).then((account) => {
+            this.setState({ account, accountAddr });
+        }).catch((error) => {
+            errorToast("Error fetching user information");
+            console.error(error);
+        });
+        if (!config.metaMask) {
+            warningToast("Please install metamask");
+        }
+    }
+
+    checkAccount() {
+        console.log("Not Implemented");
+    }
+
+    handleAddAccount() {
+        this.setState({ loading: true });
+        AccountManager.addAccount(this.state.accountAddr, this.state.accountName, this.state.accountEmail).then((result) => {
+            this.setState({ loading: false });
+            if (result) {
+                successToast("Account Created");
+            }
+            return AccountManager.getAccount(this.state.accountAddr);
+        }).then((account) => {
+            this.setState({ account });
+        }).catch((error) => {
+            errorToast("Error while adding account");
+            console.error(error);
+        });
+    }
+
     render() {
         return (
             <div className="home-root">
                 <div className="home-content">
-                    <div>
-                        <Tabs id="navbar" large={ true } renderActiveTabPanelOnly={ true }>
-                            <h3>DBNB</h3>
-                            <Tabs.Expander />
-                            <Tab id="home" title="Home" panel={<Home />} />
-                            <Tab id="profile" title="Listing" panel={<Profile />} />
-                            <Tab id="account" title="Account" panel={<Account />} />
-                            <Tab id="deploy" title="Deploy" panel={<Deploy />} />
-                        </Tabs>
-                    </div>
+                    { this.state.account !== undefined &&
+                        <div>
+                            <Tabs id="navbar" large={ true } renderActiveTabPanelOnly={ true }>
+                                <h3>DBNB</h3>
+                                <Tabs.Expander />
+                                <Tab id="home" title="Home" panel={<Home account={ this.state.account }/>} />
+                                <Tab id="profile" title="Listing" panel={<Profile account={ this.state.account } />} />
+                                <Tab id="account" title="Account" panel={<Account account={ this.state.account }/>} />
+                                <Tab id="deploy" title="Deploy" panel={<Deploy account={ this.state.account } />} />
+                            </Tabs>
+                        </div>
+                    }
+
+                    { this.state.account === undefined &&
+                        <div>
+                            <Card elevation={ Elevation.THREE }>
+                                <h4>Create Profile</h4>
+                                { this.state.customAddr === true &&
+                                    <Label text="Account Address">
+                                        <InputGroup
+                                            onChange={(event) => {
+                                                this.setState({ accountAddr: event.target.value });
+                                            }}
+                                            intent="primary"
+                                            rightElement={<Button intent="primary" onClick={ this.checkAccount.bind(this) }>Check Account</Button>}
+                                        />
+                                    </Label>
+                                }
+                                <Label text="Account Name">
+                                    <InputGroup
+                                        onChange={(event) => {
+                                            this.setState({ accountName: event.target.value });
+                                        }}
+                                        intent="primary"
+                                    />
+                                </Label>
+                                <Label text="Account Email">
+                                    <InputGroup
+                                        onChange={(event) => {
+                                            this.setState({ accountEmail: event.target.value });
+                                        }}
+                                        intent="primary"
+                                    />
+                                </Label>
+                                <Button
+                                    onClick={ this.handleAddAccount.bind(this) }
+                                    intent="primary"
+                                    loading={ this.state.loading }
+                                >Register Account</Button>
+                            </Card>
+                        </div>
+                    }
                 </div>
                 <div className="home-footer">
                     <Footer />

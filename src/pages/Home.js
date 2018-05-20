@@ -7,6 +7,9 @@ import HouseManagement from "../lib/HouseManagement";
 import AccountManagement from "../lib/AccountManagement";
 import BookingManagement from "../lib/BookingManagement";
 
+import Web3 from "web3";
+import config from "../config";
+
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -68,30 +71,18 @@ class Home extends React.Component {
         }
     }
 
-    fetchAccountInfo(accountAddr) {
-        AccountManagement.getAccount(accountAddr).then((account) => {
-            if (account === undefined) {
-                // TODO: Add some output here
-            }
-            this.setState({ bookingAccount: account });
-        }).catch((error) => {
-            console.error(error);
-        });
-    }
-
     handleMakeBooking() {
         let house = this.state.makeBooking;
-        let account = this.state.bookingAccount;
         let start = this.state.makeNewBookingSelected;
         let duration = this.state.makeNewBooking.duration;
 
-        house.makeBooking(account, start, duration).then((result) => {
+        house.makeBooking(this.props.account, start, duration).then((result) => {
             if (result) {
                 console.log("Booking Made");
             } else {
                 console.log("Failed");
             }
-            return account.confirmBooking(house, start, duration);
+            return this.props.account.confirmBooking(house, start, duration);
         }).then((result) => {
             if (result) {
                 console.log("Booking Confirmed");
@@ -117,15 +108,9 @@ class Home extends React.Component {
         let rating = this.state.makeReviewVals.rating;
         let title = this.state.makeReviewVals.title;
         let comment = this.state.makeReviewVals.comment;
-        let accountAddr = this.state.makeReviewVals.accAddr;
         let house = this.state.makeReview;
 
-        AccountManagement.getAccount(accountAddr).then((account) => {
-            if (account === undefined) {
-                throw new Error("Account Doesn't exist");
-            }
-            return house.makeRating(account, rating, title, comment);
-        }).then((result) => {
+        house.makeRating(this.props.account, rating, title, comment).then((result) => {
             if (result) {
                 console.log("Success");
             }
@@ -219,20 +204,6 @@ class Home extends React.Component {
                 }}>
                     <Card elevation={ Elevation.THREE } style={{ top: "50%", left: "50%", transform: "perspective(1px) translateY(-50%) translateX(-50%)", minWidth: "50%" }}>
                         <h4>Make a Booking</h4>
-                        <Label text="Account Address">
-                            <InputGroup
-                                onChange={(event) => {
-                                    this.setState({ makeNewBooking: {...this.state.makeNewBooking, accAddr: event.target.value} });
-                                }}
-                                intent="primary"
-                                rightElement={ <Button
-                                    onClick={() => {
-                                        this.fetchAccountInfo(this.state.makeNewBooking.accAddr);
-                                    }}
-                                    intent="primary"
-                                >Check Account</Button>}
-                                />
-                        </Label>
 
                         { this.state.bookingAccount !== undefined &&
                             <p>Account Name: { this.state.bookingAccount.getName() }</p>
@@ -262,7 +233,7 @@ class Home extends React.Component {
                             />
                         </Label>
 
-                        { this.state.makeNewBooking !== undefined && this.state.makeBooking !== undefined && this.state.bookingAccount !== undefined && this.state.makeNewBooking.duration !== "" && this.state.booked === false &&
+                        { this.state.makeNewBooking !== undefined && this.state.makeBooking !== undefined && this.state.makeNewBooking.duration !== "" && this.state.booked === false &&
                             <div>
                                 <p>Total Cost: { this.state.makeNewBooking.duration * this.state.makeBooking.getPrice() }</p>
                                 <br /><br />
@@ -302,45 +273,39 @@ class Home extends React.Component {
                         })}
 
                         {this.state.makeReviewVals !== undefined &&
-                        <div>
-                            <br /><br />
-                            <h4>Write Review</h4>
-                            <Label text="Account Address">
-                                <InputGroup onChange={(event) => {
-                                    this.setState({ makeReviewVals: {...this.state.makeReviewVals, accAddr: event.target.value} });
-                                }}
-                                intent="primary"/>
-                            </Label>
-                            <Slider initialValue={ 0 } labelPrecision={ 0 } labelStepSize={ 1 } max={ 5 } min={ 0 } stepSize={ 1 }
-                                onChange={(value) => {
-                                    this.setState({ makeReviewVals: {...this.state.makeReviewVals, rating: value} });
-                                }}
-                                value={ this.state.makeReviewVals.rating } />
-
-                            <Label text="Title">
-                                <InputGroup
-                                    onChange={(event) => {
-                                        this.setState({ makeReviewVals: {...this.state.makeReviewVals, title: event.target.value} });
+                            <div>
+                                <br /><br />
+                                <h4>Write Review</h4>
+                                <Slider initialValue={ 0 } labelPrecision={ 0 } labelStepSize={ 1 } max={ 5 } min={ 0 } stepSize={ 1 }
+                                    onChange={(value) => {
+                                        this.setState({ makeReviewVals: {...this.state.makeReviewVals, rating: value} });
                                     }}
-                                    intent="primary"
-                                />
-                            </Label>
+                                    value={ this.state.makeReviewVals.rating } />
 
-                            <Label text="Comment">
-                                <TextArea large={ false }
-                                    onChange={(event) => {
-                                        this.setState({ makeReviewVals: {...this.state.makeReviewVals, comment: event.target.value} });
-                                    }}
-                                    value={ this.state.makeReviewVals.comment }
+                                <Label text="Title">
+                                    <InputGroup
+                                        onChange={(event) => {
+                                            this.setState({ makeReviewVals: {...this.state.makeReviewVals, title: event.target.value} });
+                                        }}
+                                        intent="primary"
+                                    />
+                                </Label>
+
+                                <Label text="Comment">
+                                    <TextArea large={ false }
+                                        onChange={(event) => {
+                                            this.setState({ makeReviewVals: {...this.state.makeReviewVals, comment: event.target.value} });
+                                        }}
+                                        value={ this.state.makeReviewVals.comment }
+                                        intent="primary"
+                                        style={{ width: "100%" }}
+                                        rows={ 5 }/>
+                                </Label>
+                                <Button
+                                    onClick={ this.handleAddReview.bind(this) }
                                     intent="primary"
-                                    style={{ width: "100%" }}
-                                    rows={ 5 }/>
-                            </Label>
-                            <Button
-                                onClick={ this.handleAddReview.bind(this) }
-                                intent="primary"
-                            >Add Review</Button>
-                        </div>
+                                >Add Review</Button>
+                            </div>
                         }
 
                     </Card>

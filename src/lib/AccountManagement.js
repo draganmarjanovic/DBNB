@@ -21,7 +21,7 @@ class AccountManager {
      * @param {string} email Email contact of the account
      * @param {string} accountAddr Account Address that will be processing the request and ultimately paying for the adding of the account
      */
-    addAccount(name, email, accountAddr) {
+    addAccount(accountAddr, name, email) {
         let addAccountFunc = this.AccountManagerContract.methods.addAccount(name, email);
         return addAccountFunc.estimateGas().then((result) => {
             return addAccountFunc.send({
