@@ -38,6 +38,16 @@ class AccountManager {
         });
     }
 
+    addAccountWithImage(accountAddr, name, email, imgLoc) {
+        let addAccountFunc = this.AccountManagerContract.methods.addAccountWithImage(name, email, imgLoc);
+        return addAccountFunc.estimateGas().then((result) => {
+            return addAccountFunc.send({
+                from: accountAddr,
+                gas: (result + 150)
+            });
+        });
+    }
+
     /**
      * Finds and returns an Account object at the requested location. Throws an error if no account is found
      * @param {string} accountAddr Address of the account that is to be found
@@ -238,12 +248,12 @@ class Account {
 
     async setImageLocation(imageLocation) {
         if (this._imageLocation !== imageLocation) {
-            console.log("IMAGE LOCAITON: " + imageLocation)
+            console.log("IMAGE LOCAITON: " + imageLocation);
             let setImageLocation = this.AccountContract.methods.setImageLocation(imageLocation);
             return setImageLocation.estimateGas().then((result) => {
                 return setImageLocation.send({
                     // TODO: Change this to this.getAccountID()
-                    from: "0x17d9e9402dC45be50D892993e60bcdBe9DbdEd2f",
+                    from: this.getAccountID(),
                     gas: (result + 150)
                 });
             }).then((result) => {

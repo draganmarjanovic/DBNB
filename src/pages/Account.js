@@ -33,12 +33,37 @@ class Account extends React.Component {
     }
 
     updateImage(file) {
-        let reader = new window.FileReader()
-        reader.onloadend = () => {
-            let imgLocaiton = IpfsUtils.publish(reader.result)
-            console.log("updateImageLoc: " + imgLocaiton)
-            this.state.searchAccount.setImageLocation(imgLocaiton)
+        let reader = new window.FileReader();
+        console.log(file);
+        reader.onloadend = (event) => {
+            console.log("HEre");
+            // let imgLocation = IpfsUtils.publish(reader.result);
+            // console.log("updateImageLoc: " + imgLocation);
+            // this.state.searchAccount.setImageLocation(imgLocation);
         }
+    }
+
+    uploadImage(event) {
+        console.log("Hi");
+        let reader = new FileReader();
+        reader.onerror = (error) => {
+            console.error(error);
+        }
+        reader.onprogress = (progress) => {
+            console.log("Progress: ", progress);
+        }
+        reader.onload = () => {
+            IpfsUtils.publish(reader.result).then((imgLocation) => {
+                console.log("Image loc: ", imgLocation);
+                return this.props.account.setImageLocation(imgLocation)
+            }).then((result) => {
+                console.log("Success");
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
+        reader.readAsDataURL(event.target.files[0]);
+        console.log(reader);
     }
 
     handleUpdateAccount() {
@@ -129,12 +154,7 @@ class Account extends React.Component {
                                         this.setState({ editAccount: {...this.state.editAccount, email: event.target.value} });
                                     }}/>
                             </Label>
-                            <Label text="Profile Picture">
-                                <FileInput text="Choose file..." 
-                                        onChange={(event) => {
-                                            this.setState({editAccount: {...this.state.editAccount, imageFile: event.target.files[0]}});
-                                        }}/>
-                            </Label>
+                            <input type="file" accept="image/*" onChange={ this.uploadImage.bind(this) }/>
                         </div>
                     }
                 </div>
@@ -187,7 +207,7 @@ class Account extends React.Component {
                                             }}>Edit</Tag>
                                         </div>
                                         <br /><br />
-                                        <ProfilePicture source={ "http://localhost:8080/ipfs/" +  this.state.searchAccount.getImageLocation() }/>
+                                        <ProfilePicture account={ this.props.account } matchHeight={ false }/>
                                         <p> Hash: { this.state.searchAccount.getImageLocation() } </p>
                                         <p>Name: { this.state.searchAccount.getName() }</p>
                                         <p>Email: { this.state.searchAccount.getEmail() }</p>
