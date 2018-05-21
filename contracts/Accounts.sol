@@ -70,17 +70,6 @@ contract Account {
         return accountOwner;
     }
 
-    function rateHouse(House house, uint8 _stars, bytes32 _title, string _comment) external {
-        require(msg.sender == accountOwner);
-        require(ratedMap[address(house)] == address(0), "You have already rated this house");
-        //TODO: require on user stayed at house
-
-        Rating rating = new Rating(_stars, _title, _comment);
-        ratedMap[address(house)] = rating;
-        rated.push(rating);
-        house.addRating(rating);
-    }
-
     function leaveReview(uint8 _stars, bytes32 _title, string _comment) public {
         require(msg.sender != accountOwner, "Cannot review yourself");
         require(userReviewsMap[msg.sender] == address(0), "Already reviewed this user");
