@@ -15,12 +15,12 @@ class EscrowManager {
 
     releaseEscrow(account) {
         const releaseFunc = this.EscrowContract.methods.releaseEscrow();
-        return releaseFunc
-            .estimateGas()
+        // FIXME: Gas Estimations broken
+        return Promise.resolve()
             .then(result => {
                 return releaseFunc.send({
-                    from: account.getAccountID(),
-                    gas: result + 150
+                    from: account,
+                    gas: 65000
                 });
             })
             .then(result => {
@@ -34,12 +34,12 @@ class EscrowManager {
     checkIn(address) {
         console.log("Checkin attempt")
         const checkInFunc = this.EscrowContract.methods.checkIn();
-        return checkInFunc
-            .estimateGas()
+        // Estimate Gas function broken
+        return Promise.resolve()
             .then(gas => {
                 return checkInFunc.send({
                     from: address,
-                    gas: gas + 150
+                    gas: 655000
                 })
             })
             .then(result => {
