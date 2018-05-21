@@ -40,6 +40,7 @@ class Escrow extends React.Component {
                 daysRented: 0,
                 startString: "",
                 maturityTime: "",
+                defunct: false,
                 primary: {
                     text: "",
                     disabled: true,
@@ -173,6 +174,16 @@ class Escrow extends React.Component {
             .catch(error => console.error(error));
     }
 
+    cancelEscrow() {
+        const contract = this.state.manager;
+        contract
+            .cancelEscrow(this.state.user.accountID)
+            .then(result => console.log(result))
+            .then(() => successToast("Escrow has been cancelled sucessfully"))
+            .then(() => this.updateState())
+            .catch(error => console.error(error));
+    }
+
     updateState() {
         const manager = new EscrowManager(this.state.escrowContract.address);
         manager
@@ -194,7 +205,8 @@ class Escrow extends React.Component {
                         currentBalance,
                         startString,
                         maturityTime,
-                        daysRented: result.daysRented
+                        daysRented: result.daysRented,
+                        defunct: result.escrowDefunct,
                     }
                 });
 
@@ -369,10 +381,11 @@ class Escrow extends React.Component {
                     </table>
                     <div className="pt-dialog-footer">
                         <div className="pt-dialog-footer-actions">
-                            <Button
+                            <AnchorButton
                                 text="CANCEL"
                                 intent={Intent.DANGER}
-                                onClick={() => console.log("Cancel Escrow")}
+                                disabled={this.state.dialog.defunct}
+                                onClick={ this.cancelEscrow.bind(this) }
                             />
                             <Popover
                                 contnet={<h1>Popover!</h1>}

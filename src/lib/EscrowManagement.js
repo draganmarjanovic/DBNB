@@ -13,6 +13,16 @@ class EscrowManager {
         );
     }
 
+    async cancelEscrow(account) {
+        const cancelFunction = this.EscrowContract.methods.cancelEscrow();
+        // const estimatedGas = await cancelFunction.estimateGas();
+        const reply = await cancelFunction.send({
+            from: account,
+            gas: 650000,
+        })
+        return reply;
+    }
+
     releaseEscrow(account) {
         const releaseFunc = this.EscrowContract.methods.releaseEscrow();
         // FIXME: Gas Estimations broken
