@@ -11,8 +11,8 @@ console.log(provider);
 export default {
     addr: provider,
     metaMask,
-    mainAccount: "0xE6F4Fc8401fc7e70c1DE2104Cc52B4a42c478a97",
-    HouseManagerAddr: "0xE31edeEe2fcdAFd81FD61C9AdfE624fe286f62D4",
-    AccountManagerAddr: "0xDA84A5F02ec767Ba5d6469390917c3D139843281",
-    BookingManagerAddr: "0x496BDa35436132d582b68276710da86673149E6b"
+    mainAccount: "0x5d372cfA9Beee5Beb31d683b219Df2d7C863ABd8",
+    HouseManagerAddr: "0xE4020341bc9075092e8eA0b99AbB2D85B312A6Cc",
+    AccountManagerAddr: "0x91e965d454D7072798aEffa69FE275948602173f",
+    BookingManagerAddr: "0x19aF05930Dc31Ec1119A973Ff2E24d29c890917e"
 };

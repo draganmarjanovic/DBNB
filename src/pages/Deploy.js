@@ -21,7 +21,7 @@ class Deploy extends React.Component {
     }
 
     componentDidMount() {
-        let web3 = new Web3(config.addr);
+        let web3 = new Web3("http://localhost:7545");
         this.setState({ web3 });
         web3.eth.defaultAccount = web3.eth.accounts[0];
 

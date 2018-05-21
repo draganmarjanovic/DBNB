@@ -236,12 +236,12 @@ class Account {
 
     async setImageLocation(imageLocation) {
         if (this._imageLocation !== imageLocation) {
-            console.log("IMAGE LOCAITON: " + imageLocation)
+            console.log("IMAGE LOCAITON: " + imageLocation);
             let setImageLocation = this.AccountContract.methods.setImageLocation(imageLocation);
             return setImageLocation.estimateGas().then((result) => {
                 return setImageLocation.send({
                     // TODO: Change this to this.getAccountID()
-                    from: "0x17d9e9402dC45be50D892993e60bcdBe9DbdEd2f",
+                    from: this.getAccountID(),
                     gas: (result + 150)
                 });
             }).then((result) => {

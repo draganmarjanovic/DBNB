@@ -130,6 +130,9 @@ export class Page extends React.Component {
                                     loading={ this.state.loading }
                                 >Register Account</Button>
                             </Card>
+
+                            <br /><br />
+                            <Deploy />
                         </div>
                     }
                 </div>

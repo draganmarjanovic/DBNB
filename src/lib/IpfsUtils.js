@@ -5,13 +5,11 @@ class IpfsUtils {
     
     static publish(object) {
         const buffer = Buffer.from(object);
-        node.files.add(buffer).then((response) => {
+        return node.files.add(buffer).then((response) => {
             let objectId = response[0].hash
             // TODO: Remove the console.log()
             console.log("HASH: " + objectId)
             return objectId 
-        }).catch((error) => {
-            console.error(error)
         });
     }
 
