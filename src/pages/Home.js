@@ -126,13 +126,13 @@ class Home extends React.Component {
 
         house.makeRating(this.props.account, rating, title, comment).then((result) => {
             if (result) {
-                successToast("Review Completed Successfully");
+                successToast("Rating Completed Successfully");
                 this.setState({ makeReviewVals: {} });
             } else {
-                errorToast("Failed to Review House");
+                errorToast("Failed to Rate House");
             }
         }).catch((error) => {
-            errorToast("Error Reviewing House");
+            errorToast("Error Rating House");
             console.error(error);
         });
     }
@@ -187,7 +187,7 @@ class Home extends React.Component {
                         This is a masshive panel
                     </Card>
                 </div>
-                
+
                 { listingResult }
 
                 <Overlay isOpen={ this.state.showAvailablity !== undefined } onClose={() => {
