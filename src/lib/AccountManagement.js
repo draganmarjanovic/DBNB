@@ -38,6 +38,16 @@ class AccountManager {
         });
     }
 
+    addAccountWithImage(accountAddr, name, email, imgLoc) {
+        let addAccountFunc = this.AccountManagerContract.methods.addAccountWithImage(name, email, imgLoc);
+        return addAccountFunc.estimateGas().then((result) => {
+            return addAccountFunc.send({
+                from: accountAddr,
+                gas: (result + 150)
+            });
+        });
+    }
+
     /**
      * Finds and returns an Account object at the requested location. Throws an error if no account is found
      * @param {string} accountAddr Address of the account that is to be found

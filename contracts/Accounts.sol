@@ -121,6 +121,15 @@ contract AccountManagement {
         accountsMap[msg.sender] = a;
     }
 
+    function addAccountWithImage(string name, string email, string image) public returns (Account) {
+        require(accountsMap[msg.sender] == address(0));
+        Account a = new Account(name, email, msg.sender);
+        a.setImageLocation(image);
+        accounts.push(a);
+        accountsMap[msg.sender] = a;
+        return a;
+    }
+
     function getAllAccounts() public view returns (Account[]) {
         return accounts;
     }

@@ -154,13 +154,7 @@ class Account extends React.Component {
                                         this.setState({ editAccount: {...this.state.editAccount, email: event.target.value} });
                                     }}/>
                             </Label>
-                            <Label text="Profile Picture">
-                                <FileInput text="Choose file..." 
-                                        onChange={(event) => {
-                                            this.setState({editAccount: {...this.state.editAccount, imageFile: event.target.files}});
-                                        }}/>
-                                <input type="file" accept="image/*" onChange={ this.uploadImage.bind(this) }/>
-                            </Label>
+                            <input type="file" accept="image/*" onChange={ this.uploadImage.bind(this) }/>
                         </div>
                     }
                 </div>

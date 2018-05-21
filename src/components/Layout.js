@@ -16,6 +16,7 @@ import Escrow from "../pages/Escrow";
 import "../styles/grid.scss";
 import "../styles/components/layout.scss";
 import ProfilePicture from "./ProfilePicture";
+import IpfsUtils from "../lib/IpfsUtils";
 
 export class Page extends React.Component {
     constructor(props) {
@@ -55,12 +56,12 @@ export class Page extends React.Component {
 
     handleAddAccount() {
         this.setState({ loading: true });
-        AccountManager.addAccount(this.state.accountAddr, this.state.accountName, this.state.accountEmail).then((result) => {
+        AccountManager.addAccountWithImage(this.state.accountAddr, this.state.accountName, this.state.accountEmail, this.state.imgLocation).then((result) => {
             this.setState({ loading: false });
             if (!result) {
                 errorToast("Error creating account");
             }
-            console.log("Here");
+            console.log(result);
             setTimeout(() => {
                 AccountManager.getAccount(this.state.accountAddr).then((account) => {
                     successToast("Account Created");
@@ -74,6 +75,20 @@ export class Page extends React.Component {
             errorToast("Error while adding account");
             console.error(error);
         });
+    }
+
+    uploadImage(event) {
+        let reader = new FileReader();
+        reader.onload = () => {
+            IpfsUtils.publish(reader.result).then((imgLocation) => {
+                successToast("Image Uploaded successfully");
+                this.setState({ imgLocation });
+            }).catch((error) => {
+                errorToast("Error uploading photo");
+                console.error(error);
+            });
+        }
+        reader.readAsDataURL(event.target.files[0]);
     }
 
     render() {
@@ -126,6 +141,7 @@ export class Page extends React.Component {
                                         intent="primary"
                                     />
                                 </Label>
+                                <input type="file" accept="image/*" onChange={ this.uploadImage.bind(this) }/>
                                 <Button
                                     onClick={ this.handleAddAccount.bind(this) }
                                     intent="primary"
