@@ -24,6 +24,7 @@ import config from "../config";
 import EscrowManager from "../lib/EscrowManagement";
 import EscrowABI from "../contracts/DBNBEscrow.json";
 import { successToast, errorToast } from "../lib/Toaster";
+import createEscrow from "../lib/deployNewEscrow";
 
 class Escrow extends React.Component {
     constructor(props) {

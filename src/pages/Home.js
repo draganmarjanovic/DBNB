@@ -6,6 +6,7 @@ import "../../node_modules/react-day-picker/lib/style.css";
 import HouseManagement from "../lib/HouseManagement";
 import AccountManagement from "../lib/AccountManagement";
 import BookingManagement from "../lib/BookingManagement";
+import createEscrow from "../lib/deployNewEscrow";
 
 import Web3 from "web3";
 import config from "../config";
@@ -78,6 +79,13 @@ class Home extends React.Component {
         let house = this.state.makeBooking;
         let start = this.state.makeNewBookingSelected;
         let duration = this.state.makeNewBooking.duration;
+
+        
+        console.log("Make Escrow with address as owner :", house.getOwner());
+
+        createEscrow(this.props.account.accountID, house.getOwner(), house.getPrice(), duration, Math.floor((Date.now() / 1000) + 60))
+            .then(address => console.log(address))
+            .catch(error => console.error(error));
 
         house.makeBooking(this.props.account, start, duration).then((result) => {
             if (result) {

@@ -71,8 +71,11 @@ class House {
         return this.HouseContract.methods.getTitle().call().then((title) => {
             this.title = title;
             return this.HouseContract.methods.getDescription().call();
-        }).then((desc) => {
+        }).then(desc => {
             this.desc = desc;
+            return this.HouseContract.methods.getOwner().call();
+        }).then((owner) => {
+            this.owner = owner;
             return this.HouseContract.methods.getPrice().call();
         }).then((price) => {
             this.price = price;
@@ -118,6 +121,12 @@ class House {
         return this.price;
     }
 
+    getOwner() {
+        if (this.owner === undefined) {
+            this.load()
+        }
+        return this.owner;
+    }
     /**
      * Gets the id of the House object
      * @returns {string} ID of the contract on the blockchain
