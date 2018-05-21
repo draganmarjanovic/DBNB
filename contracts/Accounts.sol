@@ -43,6 +43,7 @@ contract Account {
 
     string private _name;
     string private _email;
+    string private _imgLocation;
 
     constructor(string name, string email, address owner) public {
         accountOwner = owner;
@@ -64,6 +65,14 @@ contract Account {
 
     function setEmail(string email) public {
         _email = email;
+    }
+
+    function setImageLocation(string image) public {
+        _imgLocation = image;
+    }
+
+    function getImageLocation() public view returns (string) {
+        return _imgLocation;
     }
 
     function getOwner() public view returns (address) {
