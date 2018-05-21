@@ -15,6 +15,7 @@ import Escrow from "../pages/Escrow";
 
 import "../styles/grid.scss";
 import "../styles/components/layout.scss";
+import ProfilePicture from "./ProfilePicture";
 
 export class Page extends React.Component {
     constructor(props) {
@@ -82,6 +83,7 @@ export class Page extends React.Component {
                     { this.state.account !== undefined &&
                         <div>
                             <Tabs id="navbar" large={ true } renderActiveTabPanelOnly={ true }>
+                                <ProfilePicture account={ this.state.account } matchHeight={ true } style={{ height: "3rem" }}/>
                                 <h3>DBNB</h3>
                                 <Tabs.Expander />
                                 <Tab id="home" title="Home" panel={<Home account={ this.state.account }/>} />

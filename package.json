@@ -11,6 +11,7 @@
   "dependencies": {
     "@blueprintjs/core": "^2.3.1",
     "@blueprintjs/datetime": "^2.0.3",
+    "axios": "^0.18.0",
     "drizzle": "^1.1.5",
     "drizzle-react": "^1.1.1",
     "drizzle-react-components": "^1.1.0",

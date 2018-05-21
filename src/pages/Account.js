@@ -213,7 +213,7 @@ class Account extends React.Component {
                                             }}>Edit</Tag>
                                         </div>
                                         <br /><br />
-                                        <ProfilePicture source={ "http://localhost:8080/ipfs/" +  this.state.searchAccount.getImageLocation() }/>
+                                        <ProfilePicture account={ this.props.account } matchHeight={ false }/>
                                         <p> Hash: { this.state.searchAccount.getImageLocation() } </p>
                                         <p>Name: { this.state.searchAccount.getName() }</p>
                                         <p>Email: { this.state.searchAccount.getEmail() }</p>
