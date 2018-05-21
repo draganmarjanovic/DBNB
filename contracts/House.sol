@@ -49,23 +49,23 @@ contract House {
     }
 
     function makeRating(Account account, uint8 stars, bytes32 title, string comment) public {
-        require(account.getOwner() == msg.sender);
-        require(msg.sender != _homeOwner, "Can rate your own house");
-        require(ratingsMap[msg.sender] == address(0), "Already rated");
+        // require(account.getOwner() == msg.sender);
+        // require(msg.sender != _homeOwner, "Can rate your own house");
+        // require(ratingsMap[msg.sender] == address(0), "Already rated");
 
-        // Checking for previous stay
-        AccountBooking[] memory stays = account.getBookings();
-        bool stayed = false;
-        for (uint i = 0; i < stays.length; ++i) {
-            if (stays[i].getHouse() == this && stays[i].getStart() < now) {
-                stayed = true;
-                break;
-            }
-        }
+        // // Checking for previous stay
+        // AccountBooking[] memory stays = account.getBookings();
+        // bool stayed = false;
+        // for (uint i = 0; i < stays.length; ++i) {
+        //     if (stays[i].getHouse() == this && stays[i].getStart() < now) {
+        //         stayed = true;
+        //         break;
+        //     }
+        // }
 
-        if (!stayed) { // false if no previous stay
-            revert("Have not stayed at House");
-        }
+        // if (!stayed) { // false if no previous stay
+        //     revert("Have not stayed at House");
+        // }
 
         Rating rating = new Rating(stars, title, comment);
         ratingsMap[msg.sender] = rating;

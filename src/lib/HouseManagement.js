@@ -43,9 +43,11 @@ class HouseManager {
 
     addHouse(account, title, desc, price) {
         let addHouse = this.HouseManagerContract.methods.addHouse(account.contractAddr, title, desc, price);
-        return addHouse.send({
+        return addHouse.estimateGas().then((result) => {
+            return addHouse.send({
                 from: account.getAccountID(),
-                gas: (6550000)
+                gas: (result + 150)
+            });
         }).then((result) => {
             if (result !== {}) {
                 return true;
