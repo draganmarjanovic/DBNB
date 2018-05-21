@@ -30,19 +30,32 @@ class HouseManager {
         });
     }
 
-    addHouse(account, title, desc, price) {
-        let addHouse = this.HouseManagerContract.methods.addHouse(title, desc, price);
-        return addHouse.estimateGas().then((result) => {
-            return addHouse.send({
-                from: account.getAccountID(),
-                gas: 6550000
+    getHouses(account) {
+        console.log(account.contractAddr);
+        return this.HouseManagerContract.methods.getUserHouses(account.contractAddr).call().then((result) => {
+            let houseList = [];
+            result.forEach((houseAddr) => {
+                houseList.push((new House(houseAddr)).load());
             });
+            return Promise.all(houseList);
+        });
+    }
+
+    addHouse(account, title, desc, price) {
+        let addHouse = this.HouseManagerContract.methods.addHouse(account.contractAddr, title, desc, price);
+        return addHouse.send({
+                from: account.getAccountID(),
+                gas: (6550000)
         }).then((result) => {
             if (result !== {}) {
                 return true;
             }
             return false;
         });
+    }
+
+    getHouse(addr) {
+        return House(addr).load();
     }
 }
 

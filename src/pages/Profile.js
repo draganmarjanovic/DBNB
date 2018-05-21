@@ -24,6 +24,18 @@ class Profile extends React.Component {
         };
     }
 
+    fetchHouses() {
+        this.props.account.getHomes().then((result) => {
+            this.setState({ homes: result });
+        }).catch((error) => {
+            errorToast("Error fetching homes");
+        });
+    }
+
+    componentDidMount() {
+        this.fetchHouses();
+    }
+
     handleAddListing() {
         this.setState ( {
             listingButton: {
@@ -33,6 +45,7 @@ class Profile extends React.Component {
 
         HouseManager.addHouse(this.props.account, this.state.addListing.title, this.state.addListing.desc, this.state.addListing.cost).then((result) => {
             successToast( this.state.addListing.title + " was listed successfully!");
+            this.fetchHouses();
             this.setState({
                 addListing: {
                     title: "",
@@ -51,6 +64,23 @@ class Profile extends React.Component {
     }
 
     render() {
+
+        let houseList = [];
+        if (this.state.homes !== undefined) {
+            this.state.homes.forEach((house) => {
+                houseList.push((
+                    <div>
+                        <Card elevation={ Elevation.THREE } key={ house.contractAddr }>
+                            <h4 style={{ display: "inline-block" }}>{ house.getTitle() }</h4>
+                            <span style={{ float: "right" }}>{ house.getPrice() } ETH per night</span><br />
+                            <div>{ house.getDescription() }</div>
+                        </Card>
+                        <br />
+                    </div>
+                ));
+            });
+        }
+
         return (
             <div className="row">
                 <div className="col-sm-12 col-md-6">
@@ -89,6 +119,9 @@ class Profile extends React.Component {
                             loading={ this.state.listingButton.loading }
                         >Add Listing</Button>
                     </Card>
+                </div>
+                <div className="col-sm-12 col-md-6" style={{ paddingLeft: "0.8rem" }}>
+                    { houseList }
                 </div>
             </div>
         )

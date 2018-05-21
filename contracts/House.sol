@@ -104,17 +104,18 @@ contract HouseManagement {
     mapping(address => House[]) private owned;
     House[] private houses;
 
-    function addHouse(string title, string desc, uint16 price) public {
+    function addHouse(Account owner, string title, string desc, uint16 price) public {
         House house = new House(title, desc, price, msg.sender);
+        //owner.addHouse(house);
         houses.push(house);
-        owned[msg.sender].push(house);
+        owned[owner].push(house);
     }
 
     function getAllHouses() public view returns (House[]) {
         return houses;
     }
 
-    function getUserHouses(address user) public view returns (House[]) {
+    function getUserHouses(Account user) public view returns (House[]) {
         return owned[user];
     }
 }

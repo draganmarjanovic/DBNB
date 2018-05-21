@@ -4,6 +4,7 @@ import config from "../config";
 import AccountManagerABI from "../contracts/AccountManagement.json";
 import AccountABI from "../contracts/Account.json";
 import AccountBookingABI from "../contracts/AccountBooking.json";
+import HouseManagement from "./HouseManagement";
 
 const web3 = new Web3(config.addr);
 
@@ -137,6 +138,17 @@ class Account {
             this._imageLocation = imageLocation;
             return this;
         });
+    }
+
+    getHomes() {
+        // return this.AccountContract.methods.getHomes().call().then((homes) => {
+        //     let homesList = [];
+        //     homes.forEach((home) => {
+        //         homesList.push(HouseManagement.getHouse(home));
+        //     })
+        //     return Promise.all(homesList);
+        // });
+        return HouseManagement.getHouses(this);
     }
 
     /**

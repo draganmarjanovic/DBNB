@@ -41,6 +41,8 @@ contract Account {
 
     address private accountOwner;
 
+    House[] private homes;
+
     string private _name;
     string private _email;
     string private _imgLocation;
@@ -106,6 +108,14 @@ contract Account {
 
     function getBookings() public view returns (AccountBooking[]) {
         return _bookings;
+    }
+
+    function addHouse(House house) public {
+        homes.push(house);
+    }
+
+    function getHomes() public view returns (House[]) {
+        return homes;
     }
 }
 

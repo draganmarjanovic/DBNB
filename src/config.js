@@ -12,7 +12,7 @@ export default {
     addr: provider,
     metaMask,
     mainAccount: "0x5d372cfA9Beee5Beb31d683b219Df2d7C863ABd8",
-    HouseManagerAddr: "0xDDf5d102fD0A4c1178430f7bBDD8a41A0FE73e79",
-    AccountManagerAddr: "0xf6bD9a959E371164fB3F9cE53c2e40619Cf48b66",
-    BookingManagerAddr: "0x766453f81f200443aa4BCCBAcbF5bcc1420d533F"
+    HouseManagerAddr: "0x8E309b3F94F0094B7052798161f335E03C7803B6",
+    AccountManagerAddr: "0x3BB6ecF177d6dB53e836dC9f9E812c02bE675dE9",
+    BookingManagerAddr: "0x72c4b8758B63B9Fa5b80143a1e31B417f09D3550"
 };
